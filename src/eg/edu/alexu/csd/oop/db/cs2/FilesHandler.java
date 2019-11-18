@@ -13,12 +13,8 @@ public class FilesHandler {
         return mainPath.getAbsolutePath()+fileSeparator+name;
     }
     public boolean isDatabaseExist(String name){
-        File[] files = mainPath.listFiles();
-        for(File file : files){
-            if (file.getName().equals(name))
-                return true;
-        }
-        return false;
+        File f = new File(mainPath+fileSeparator+name);
+        return f.exists();
     }
     public void createDatabase(String databaseName){
         File newDatabase = new File(mainPath+fileSeparator+databaseName);
@@ -35,12 +31,7 @@ public class FilesHandler {
         directory.delete();
     }
     public void dropDatabase(String name){
-        File [] files = mainPath.listFiles();
-        for (File file : files){
-            if(file.getName().equals(name)){
-                deleteDirectory(file);
-            }
-        }
+        deleteDirectory(new File(mainPath+fileSeparator+name));
     }
 
 }

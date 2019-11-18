@@ -17,15 +17,16 @@ public class DatabaseManager implements Database{
     }
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
+        databaseName = databaseName.toLowerCase();
         boolean dataBaseExist = filesHandler.isDatabaseExist(databaseName);
         try {
             if(dataBaseExist && dropIfExists) {
-                    this.executeStructureQuery("DROP DATABASE"+databaseName);
+                    this.executeStructureQuery("drop database  "+databaseName);
             }
             else if(dataBaseExist && !dropIfExists){
                 return filesHandler.getPathOf(databaseName);
             }
-            this.executeStructureQuery("CREATE DATABASE"+databaseName);
+            this.executeStructureQuery("create database  "+databaseName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,26 +35,27 @@ public class DatabaseManager implements Database{
 
     @Override
     public boolean executeStructureQuery(String query) throws SQLException {
+        query = query.toLowerCase();
         if(QueriesParser.checkCreateDatabase(query)){
-            Pattern regex = Pattern.compile("\\b(\\w)+\\s*;?\\s*$");
+            Pattern regex = Pattern.compile("\\s+(\\w|\\\\)+\\s*;?\\s*$");
             Matcher match = regex.matcher(query);
             match.find();
-            String databaseName = match.group().replaceAll("\\s+", "").replaceAll(";", "");
+            String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
             filesHandler.createDatabase(databaseName);
         }else if(QueriesParser.checkDropDatabase(query)){
-            Pattern regex = Pattern.compile("\\b(\\w)+\\s*;?\\s*$");
+            Pattern regex = Pattern.compile("\\s+(\\w|\\\\)+\\s*;?\\s*$");
             Matcher match = regex.matcher(query);
             match.find();
-            String databaseName = match.group().replaceAll("\\s+", "").replaceAll(";", "");
+            String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
             filesHandler.dropDatabase(databaseName);
         } else if (QueriesParser.checkCreateTable(query)) {
-            
+
         }else if (QueriesParser.checkDropTable(query)){
 
         }else{
             throw new SQLException();
         }
-        return false;
+        return true;
     }
 
     @Override

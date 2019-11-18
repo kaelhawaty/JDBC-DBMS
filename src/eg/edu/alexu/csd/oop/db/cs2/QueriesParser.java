@@ -22,10 +22,10 @@ public class QueriesParser {
         }
     }
     public static boolean checkCreateDatabase(String input){
-        return input.toLowerCase().matches("^\\s*create\\s+database\\s+(\\w)+\\s*;?\\s*$");
+        return input.toLowerCase().matches("^\\s*create\\s+database\\s+(\\w|\\\\)+\\s*;?\\s*$");
     }
     public static boolean checkDropDatabase(String input){
-        return input.toLowerCase().matches("^\\s*drop\\s+database\\s+(\\w)+\\s*;?\\s*$");
+        return input.toLowerCase().matches("^\\s*drop\\s+database\\s+(\\w|\\\\)+\\s*;?\\s*$");
     }
     public static boolean checkCreateTable(String input){
         return input.toLowerCase().matches("^\\s*create\\s+table\\s+\\w+\\s*\\((\\w+\\s+(int|varchar)\\s*,\\s*)*(\\w+\\s+(int|varchar)\\s*)\\)\\s*;?\\s*$");
