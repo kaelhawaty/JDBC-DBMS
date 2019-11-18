@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.oop.db.cs2;
 
 import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
 
-import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,21 +40,34 @@ public class DatabaseManager implements Database{
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
+            currentDatabase = new DatabaseContainer(databaseName);
             filesHandler.createDatabase(databaseName);
+            return true;
         }else if(QueriesParser.checkDropDatabase(query)){
             Pattern regex = Pattern.compile("\\s+(\\w|\\\\)+\\s*;?\\s*$");
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
             filesHandler.dropDatabase(databaseName);
+            return true;
         } else if (QueriesParser.checkCreateTable(query)) {
-
+            query = query.replaceAll("^\\s*create\\s+table\\s+", "").replaceAll("[\\(\\),;]", " ");
+            String[] tableInfo = query.split("\\s+");
+            if (filesHandler.isTableExist(tableInfo[0], currentDatabase.getName()))
+                return false;
+            filesHandler.createTable(tableInfo[0], currentDatabase.getName());
+            currentDatabase.addTable(tableInfo);
+            return true;
         }else if (QueriesParser.checkDropTable(query)){
-
+            query = query.replaceAll("^\\s*drop\\s+table\\s+", "").replaceAll("\\s*;?\\s*$", "");
+            if(!filesHandler.isTableExist(query, currentDatabase.getName()))
+                return false;
+            filesHandler.dropTable(query, currentDatabase.getName());
+            currentDatabase.removeTable(query);
+            return true;
         }else{
             throw new SQLException();
         }
-        return true;
     }
 
     @Override

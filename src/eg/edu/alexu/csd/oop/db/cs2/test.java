@@ -1,9 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import java.io.File;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class test {
 
