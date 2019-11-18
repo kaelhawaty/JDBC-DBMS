@@ -20,6 +20,10 @@ public class FilesHandler {
         }
         return false;
     }
+    public void createDatabase(String databaseName){
+        File newDatabase = new File(mainPath+fileSeparator+databaseName);
+        newDatabase.mkdirs();
+    }
     private void deleteDirectory(File directory){
         File[] contents = directory.listFiles();
         for (File file : contents){
@@ -30,7 +34,7 @@ public class FilesHandler {
         }
         directory.delete();
     }
-    public void deleteDatabase(String name){
+    public void dropDatabase(String name){
         File [] files = mainPath.listFiles();
         for (File file : files){
             if(file.getName().equals(name)){
@@ -38,4 +42,5 @@ public class FilesHandler {
             }
         }
     }
+
 }

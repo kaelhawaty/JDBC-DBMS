@@ -1,30 +1,37 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import eg.edu.alexu.csd.oop.db.cs2.DatabaseManager;
+
+import java.sql.SQLException;
 
 public class QueriesParser {
-    Database db;
-    public QueriesParser(){
-        db = DatabaseManager.getInstance();
-    }
+    private static Database db = DatabaseManager.getInstance();
     public static void execute(String input){
-        if(checkExecuteStructureQuery(input)){
-            System.out.println("here create table, drop table, drop table or drop database");
-        }else if(checkExecuteQuery(input)){
-            System.out.println("here selection");
-        }else if(checkExecuteUpdateQuery(input)){
-            System.out.println("here update/insert/delete");
-        }else{
-            System.out.println("Syntax Error");
+
+        try {
+            if (checkCreateDatabase(input) || checkDropDatabase(input) || checkCreateTable(input) || checkDropTable(input)) {
+                db.executeStructureQuery(input);
+            } else if (checkExecuteQuery(input)) {
+                System.out.println("here selection");
+            } else if (checkExecuteUpdateQuery(input)) {
+                System.out.println("here update/insert/delete");
+            } else {
+                System.out.println("Syntax Error");
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     public static boolean checkCreateDatabase(String input){
         return input.toLowerCase().matches("^\\s*create\\s+database\\s+(\\w)+\\s*;?\\s*$");
     }
-    public static boolean checkExecuteStructureQuery(String input){
-        return input.toLowerCase().matches("^\\s*drop\\s+(database|table)\\s+(\\w)+\\s*;?\\s*$")
-                || input.toLowerCase().matches("^\\s*create\\s+table\\s+\\w+\\s*\\((\\w+\\s+(int|varchar)\\s*,\\s*)*(\\w+\\s+(int|varchar)\\s*)\\)\\s*;?\\s*$")
-                || checkCreateDatabase(input);
+    public static boolean checkDropDatabase(String input){
+        return input.toLowerCase().matches("^\\s*drop\\s+database\\s+(\\w)+\\s*;?\\s*$");
+    }
+    public static boolean checkCreateTable(String input){
+        return input.toLowerCase().matches("^\\s*create\\s+table\\s+\\w+\\s*\\((\\w+\\s+(int|varchar)\\s*,\\s*)*(\\w+\\s+(int|varchar)\\s*)\\)\\s*;?\\s*$");
+    }
+    public static boolean checkDropTable(String input){
+        return input.toLowerCase().matches("^\\s*drop\\s+table\\s+(\\w)+\\s*;?\\s*$");
     }
     public static boolean checkExecuteQuery(String input) {
         return input.toLowerCase().matches("^\\s*select\\s+(\\w+,\\s+)*(\\w+|\\*)\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'|\\\")\\w+(\\'|\\\")))?\\s*;?\\s*$");

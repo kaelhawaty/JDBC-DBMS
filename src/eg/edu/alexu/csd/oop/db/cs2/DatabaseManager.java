@@ -1,11 +1,17 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
+import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
+
+import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DatabaseManager implements Database{
     private static DatabaseManager instance = new DatabaseManager();
-    private String currentDatabase;
+    private DatabaseContainer currentDatabase;
     private FilesHandler filesHandler = new FilesHandler();
+
     public static DatabaseManager getInstance(){
         return instance;
     }
@@ -28,6 +34,25 @@ public class DatabaseManager implements Database{
 
     @Override
     public boolean executeStructureQuery(String query) throws SQLException {
+        if(QueriesParser.checkCreateDatabase(query)){
+            Pattern regex = Pattern.compile("\\b(\\w)+\\s*;?\\s*$");
+            Matcher match = regex.matcher(query);
+            match.find();
+            String databaseName = match.group().replaceAll("\\s+", "").replaceAll(";", "");
+            filesHandler.createDatabase(databaseName);
+        }else if(QueriesParser.checkDropDatabase(query)){
+            Pattern regex = Pattern.compile("\\b(\\w)+\\s*;?\\s*$");
+            Matcher match = regex.matcher(query);
+            match.find();
+            String databaseName = match.group().replaceAll("\\s+", "").replaceAll(";", "");
+            filesHandler.dropDatabase(databaseName);
+        } else if (QueriesParser.checkCreateTable(query)) {
+            
+        }else if (QueriesParser.checkDropTable(query)){
+
+        }else{
+            throw new SQLException();
+        }
         return false;
     }
 

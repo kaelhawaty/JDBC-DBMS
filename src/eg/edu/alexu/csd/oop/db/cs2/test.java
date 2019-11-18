@@ -11,10 +11,9 @@ public class test {
         String s = "";
         QueriesParser qp = new QueriesParser();
         Scanner scan = new Scanner(System.in);
-        /*while(true){
+        while(true){
             s = scan.nextLine();
             qp.execute(s);
-        }*/
-        FilesHandler f = new FilesHandler();
+        }
     }
 }
