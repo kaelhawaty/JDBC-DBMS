@@ -21,11 +21,11 @@ public class LessThan implements ConditionsFilter {
             for (Record record : records){
                 if(column.getType().equalsIgnoreCase("int")){
                     if ((Integer)record.getValue() < Integer.parseInt(compareTo)){
-                        current.addRecord(new Record<Integer>(Integer.parseInt(compareTo)));
+                        current.addRecord(new Record<Integer>((Integer)record.getValue()));
                     }
                 }else{
                     if(compareTo.compareTo((String) record.getValue()) > 0){
-                        current.addRecord(new Record<String>(compareTo));
+                        current.addRecord(new Record<String>((String) record.getValue()));
                     }
                 }
             }
