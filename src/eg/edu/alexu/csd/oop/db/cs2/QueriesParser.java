@@ -28,14 +28,14 @@ public class QueriesParser {
         return input.toLowerCase().matches("^\\s*drop\\s+database\\s+(\\w|\\\\)+\\s*;?\\s*$");
     }
     public static boolean checkCreateTable(String input){
-        return input.toLowerCase().matches("^\\s*create\\s+table\\s+\\w+\\s*\\((\\w+\\s+(int|varchar)\\s*,\\s*)*(\\w+\\s+(int|varchar)\\s*)\\)\\s*;?\\s*$");
+        return input.toLowerCase().matches("^\\s*create\\s+table\\s+\\w+\\s*\\((\\s*\\w+\\s+(int|varchar)\\s*,\\s*)*(\\s*\\w+\\s+(int|varchar)\\s*)\\)\\s*;?\\s*$");
     }
     public static boolean checkDropTable(String input){
         return input.toLowerCase().matches("^\\s*drop\\s+table\\s+(\\w)+\\s*;?\\s*$");
     }
     public static boolean checkInsertInto(String input){
-        return input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s+values\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*;?\\s*$")
-                ||input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*;?\\s*$");
+        return input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s+values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$")
+                ||input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$");
     }
     public static boolean checkExecuteQuery(String input) {
         return input.toLowerCase().matches("^\\s*select\\s+(\\w+,\\s+)*(\\w+|\\*)\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'|\\\")\\w+(\\'|\\\")))?\\s*;?\\s*$");

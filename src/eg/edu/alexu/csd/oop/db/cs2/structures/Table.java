@@ -35,5 +35,25 @@ public class Table {
                 column.addRecord(null);
         }
     }
+    public void addRow(String[] values){
+        int i = 2;
+        for (Column column : columns){
+            if (column.getType().equalsIgnoreCase("int"))
+                column.addRecord(new Record<Integer>(Integer.parseInt(values[i++])));
+            else
+                column.addRecord(new Record<String>((values[i++])));
+        }
+    }
+    public boolean containColumn(String columnName){
+        for (Column column:columns){
+            if(column.getName().equals(columnName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public int getSize(){
+        return columns.size();
+    }
 
 }

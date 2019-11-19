@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.oop.db.cs2;
 
 import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -50,6 +49,7 @@ public class DatabaseManager implements Database{
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
+            currentDatabase = null;
             filesHandler.dropDatabase(databaseName);
             return true;
         } else if (QueriesParser.checkCreateTable(query)) {
@@ -82,17 +82,31 @@ public class DatabaseManager implements Database{
         query = query.toLowerCase();
         if (QueriesParser.checkInsertInto(query)){
             HashMap<String, String> hashMap = new HashMap<>();
-            if (query.matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*;?\\s*$")){
+            if (query.matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$")){
                 query = query.replaceAll("^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
                 query = query.replaceAll("[\\(\\),]", " ");
                 String [] split = query.split("\\s+");
+                if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
+                    throw  new SQLException();
                 if(split.length%2 == 0 && split[split.length/2].equals("values")){
                    for(int i = 1; i < split.length/2; ++i){
-                       hashMap.put(split[i], split[i+split.length/2]);
+                       if(currentDatabase.containColumn(split[0], split[i]))
+                            hashMap.put(split[i], split[i+split.length/2]);
+                       else
+                           throw new SQLException();
                    }
                 }else
                     throw new SQLException();
                 currentDatabase.insertRow(split[0], hashMap);
+            }else{
+                query = query.replaceAll("^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
+                query = query.replaceAll("[\\(\\),]", " ");
+                String [] split = query.split("\\s+");
+                if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
+                    throw  new SQLException();
+                if (split.length-2 != currentDatabase.getTableNumOfColumns(split[0]))
+                    throw new SQLException();
+                currentDatabase.insertRow(split[0], split);
             }
             return 1;
         }
