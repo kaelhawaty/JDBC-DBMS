@@ -48,4 +48,7 @@ public class DatabaseContainer {
         Table table = getTable(tableName);
         return table.getSize();
     }
+    public List<Table> getTables(){
+        return tables;
+    }
 }

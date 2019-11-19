@@ -15,6 +15,12 @@ public class DatabaseManager implements Database{
     public static DatabaseManager getInstance(){
         return instance;
     }
+
+    @Override
+    public DatabaseContainer get() {
+        return currentDatabase;
+    }
+
     @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
         databaseName = databaseName.toLowerCase();

@@ -23,6 +23,9 @@ public class Table {
         }
         columns.add(column);
     }
+    public void addColumn(Column col){
+        columns.add(col);
+    }
     public void addRow(HashMap values){
         for (Column column : columns){
             if(values.containsKey(column.getName())){
@@ -55,5 +58,7 @@ public class Table {
     public int getSize(){
         return columns.size();
     }
-
+    public List<Column> getColumns(){
+        return columns;
+    }
 }
