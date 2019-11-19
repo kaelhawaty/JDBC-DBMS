@@ -2,7 +2,9 @@ package eg.edu.alexu.csd.oop.db.cs2;
 
 import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
 
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,6 +79,23 @@ public class DatabaseManager implements Database{
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
+        query = query.toLowerCase();
+        if (QueriesParser.checkInsertInto(query)){
+            HashMap<String, String> hashMap = new HashMap<>();
+            if (query.matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*;?\\s*$")){
+                query = query.replaceAll("^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
+                query = query.replaceAll("[\\(\\),]", " ");
+                String [] split = query.split("\\s+");
+                if(split.length%2 == 0 && split[split.length/2].equals("values")){
+                   for(int i = 1; i < split.length/2; ++i){
+                       hashMap.put(split[i], split[i+split.length/2]);
+                   }
+                }else
+                    throw new SQLException();
+                currentDatabase.insertRow(split[0], hashMap);
+            }
+            return 1;
+        }
         return 0;
     }
 }
