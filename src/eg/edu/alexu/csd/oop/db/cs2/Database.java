@@ -1,7 +1,5 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
-
 import java.sql.SQLException;
 
 public interface Database {
@@ -17,7 +15,6 @@ public interface Database {
      * @return the absolute path of the database directory wherein data is
      *         stored
      */
-    public DatabaseContainer get();
     public String createDatabase(String databaseName, boolean dropIfExists);
 
     /**

@@ -17,11 +17,6 @@ public class DatabaseManager implements Database{
     }
 
     @Override
-    public DatabaseContainer get() {
-        return currentDatabase;
-    }
-
-    @Override
     public String createDatabase(String databaseName, boolean dropIfExists) {
         databaseName = databaseName.toLowerCase();
         boolean dataBaseExist = filesHandler.isDatabaseExist(databaseName);
