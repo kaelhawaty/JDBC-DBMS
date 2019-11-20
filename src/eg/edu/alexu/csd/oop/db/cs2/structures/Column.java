@@ -30,4 +30,7 @@ public class Column <T>{
     public Record getRecordAtIndex(int index){
         return records.get(index);
     }
+    public void deleteRecord(int index){
+        records.remove(index);
+    }
 }

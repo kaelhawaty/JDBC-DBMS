@@ -98,6 +98,7 @@ public class DatabaseManager implements Database{
                 if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
                     throw  new SQLException();
                 if(split.length%2 == 0 && split[split.length/2].equals("values")){
+                    hashMap.put("ID" ,String.valueOf(currentDatabase.getTable(split[0]).getIDCounter()));
                    for(int i = 1; i < split.length/2; ++i){
                        if(currentDatabase.containColumn(split[0], split[i]))
                             hashMap.put(split[i], split[i+split.length/2]);
@@ -113,7 +114,7 @@ public class DatabaseManager implements Database{
                 String [] split = query.split("\\s+");
                 if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
                     throw  new SQLException();
-                if (split.length-2 != currentDatabase.getTableNumOfColumns(split[0]))
+                if (split.length-1 != currentDatabase.getTableNumOfColumns(split[0]))
                     throw new SQLException();
                 currentDatabase.insertRow(split[0], split);
             }
@@ -124,9 +125,27 @@ public class DatabaseManager implements Database{
             if(query.matches("^\\w+$")){
                 return currentDatabase.clearTable(query);
             }else{
-                String[] split = query.split("\\s+");
+                String[] split = new String[5];
+                int j = 0;
+                split[0] = new String();
+                query = query.replaceAll("\\s+", " ");
+                for(int i = 0; i < query.length();++i){
+                    if (query.charAt(i)== ' ') {
+                        j++;
+                        split[j] = new String();
+                    }
+                    else if(query.charAt(i)=='=' || query.charAt(i) == '<' || query.charAt(i) == '>'){
+                        j++;
+                        split[j] = String.valueOf(query.charAt(i));
+                        j++;
+                        split[j] = new String();
+                    }else {
+                        split[j]+=String.valueOf(query.charAt(i));
+                    }
+                }
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
                 return currentDatabase.deleteItems(split[0], table);
+
             }
         }
         return 0;
