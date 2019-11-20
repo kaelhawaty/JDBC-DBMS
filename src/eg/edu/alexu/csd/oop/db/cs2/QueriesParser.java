@@ -12,7 +12,7 @@ public class QueriesParser {
                 db.executeStructureQuery(input);
             } else if (checkExecuteQuery(input)) {
                 System.out.println("here selection");
-            } else if (checkInsertInto(input)) {
+            } else if (checkInsertInto(input) || checkDeleteFromTable(input)) {
                 db.executeUpdateQuery(input);
             } else {
                 System.out.println("Syntax Error");
@@ -36,6 +36,9 @@ public class QueriesParser {
     public static boolean checkInsertInto(String input){
         return input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s+values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$")
                 ||input.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$");
+    }
+    public static boolean checkDeleteFromTable(String input){
+        return input.toLowerCase().matches("^\\s*delete\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\'))?\\s*;?\\s*$");
     }
     public static boolean checkExecuteQuery(String input) {
         return input.toLowerCase().matches("^\\s*select\\s+(\\w+,\\s+)*(\\w+|\\*)\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'|\\\")\\w+(\\'|\\\")))?\\s*;?\\s*$");

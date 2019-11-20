@@ -24,4 +24,10 @@ public class Column <T>{
     public void addRecord(Record record){
         records.add(record);
     }
+    public int getSize(){
+        return records.size();
+    }
+    public String getRecordAtIndex(int index){
+        return records.get(index).toString();
+    }
 }

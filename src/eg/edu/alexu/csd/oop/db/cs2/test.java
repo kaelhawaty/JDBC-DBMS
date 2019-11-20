@@ -16,6 +16,15 @@ public class test {
         String s = "";
         QueriesParser qp = new QueriesParser();
         Scanner scan = new Scanner(System.in);
-
+        qp.execute("create database db1");
+        qp.execute("create table test(age int, size int)");
+        qp.execute("insert into test(age, size) values (20,25)");
+        qp.execute("insert into test(age, size) values (20,25)");
+        qp.execute("insert into test(age, size) values (20,25)");
+        qp.execute("delete from test where age = 20");
+        while (true){
+            s = scan.nextLine();
+            qp.execute(s);
+        }
     }
 }

@@ -12,4 +12,8 @@ public class Record <T>{
     public T getValue() {
         return value;
     }
+    @Override
+    public String toString(){
+        return ""+this;
+    }
 }

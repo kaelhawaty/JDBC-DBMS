@@ -5,31 +5,32 @@ import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Equal implements ConditionsFilter {
 
     @Override
-    public Table meetCondition(Table table, String columnName, String compareTo) {
+    public Table meetCondition(Table table, String columnName, String value) {
         List<Column> columns = table.getColumns();
-        Table meetTable = new Table("meet"+table.getName());
+        Table meetTable = new Table(table);
         for (Column column : columns){
             List<Record> records = column.getRecords();
-            Column current = new Column(column.getName(), column.getType());
             if (!column.getName().equals(columnName))
                 continue;
             for (Record record : records){
                 if(column.getType().equalsIgnoreCase("int")){
-                    if ((Integer)record.getValue()==Integer.parseInt(compareTo)){
-                        current.addRecord(new Record<Integer>(Integer.parseInt(compareTo)));
+                    if ((Integer)record.getValue()==Integer.parseInt(value)){
+                       HashMap rowInfo = table.getRow(column);
+                       meetTable.addRow(rowInfo);
                     }
                 }else{
-                    if(compareTo.equals((String) record.getValue())){
-                        current.addRecord(new Record<String>(compareTo));
+                    if(value.equals((String) record.getValue())){
+                        HashMap rowInfo = table.getRow(column);
+                        meetTable.addRow(rowInfo);
                     }
                 }
             }
-            meetTable.addColumn(current);
         }
         return meetTable;
     }

@@ -10,7 +10,7 @@ import java.util.List;
 public class GreaterThan implements ConditionsFilter {
 
     @Override
-    public Table meetCondition(Table table, String columnName, String compareTo) {
+    public Table meetCondition(Table table, String columnName, String value) {
         List<Column> columns = table.getColumns();
         Table meetTable = new Table("meet"+table.getName());
         for (Column column : columns){
@@ -20,11 +20,11 @@ public class GreaterThan implements ConditionsFilter {
                 continue;
             for (Record record : records){
                 if(column.getType().equalsIgnoreCase("int")){
-                    if ((Integer)record.getValue() > Integer.parseInt(compareTo)){
+                    if ((Integer)record.getValue() > Integer.parseInt(value)){
                         current.addRecord(new Record<Integer>((Integer)record.getValue()));
                     }
                 }else{
-                    if(compareTo.compareTo((String) record.getValue()) < 0){
+                    if(value.compareTo((String) record.getValue()) < 0){
                         current.addRecord(new Record<String>((String) record.getValue()));
                     }
                 }

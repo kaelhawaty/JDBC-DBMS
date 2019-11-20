@@ -14,7 +14,7 @@ public class DatabaseContainer {
     public String getName(){
         return name;
     }
-    private Table getTable(String tableName){
+    public Table getTable(String tableName){
         for (Table table:tables){
             if(table.getName().equals(tableName))
                 return table;
@@ -50,5 +50,13 @@ public class DatabaseContainer {
     }
     public List<Table> getTables(){
         return tables;
+    }
+    public int clearTable(String tableName){
+        Table table = getTable(tableName);
+        return table.clear();
+    }
+    public int deleteItems(String tableName, Table toDelete){
+        Table curTable = getTable(tableName);
+        return curTable.deleteItems(toDelete);
     }
 }

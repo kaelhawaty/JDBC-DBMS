@@ -1,17 +1,25 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
+import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
+import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 public class DatabaseManager implements Database{
     private static DatabaseManager instance = new DatabaseManager();
     private DatabaseContainer currentDatabase;
     private FilesHandler filesHandler = new FilesHandler();
-
+    private ConditionsFilter equal = new Equal();
+    private ConditionsFilter greater = new GreaterThan();
+    private ConditionsFilter less = new LessThan();
+    private Switch aSwitch = new Switch();
+    private DatabaseManager(){
+        aSwitch.register("=", equal);
+        aSwitch.register("<", less);
+        aSwitch.register(">", greater);
+    }
     public static DatabaseManager getInstance(){
         return instance;
     }
@@ -110,6 +118,16 @@ public class DatabaseManager implements Database{
                 currentDatabase.insertRow(split[0], split);
             }
             return 1;
+        }else if (QueriesParser.checkDeleteFromTable(query)){
+            query = query.toLowerCase();
+            query = query.replaceAll("^\\s*delete\\s+from\\s", "").replaceAll("\\s*;?\\s*$", "");
+            if(query.matches("^\\w+$")){
+                return currentDatabase.clearTable(query);
+            }else{
+                String[] split = query.split("\\s+");
+                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
+                return currentDatabase.deleteItems(split[0], table);
+            }
         }
         return 0;
     }
