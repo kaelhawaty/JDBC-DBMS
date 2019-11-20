@@ -27,7 +27,7 @@ public class Column <T>{
     public int getSize(){
         return records.size();
     }
-    public String getRecordAtIndex(int index){
-        return records.get(index).toString();
+    public Record getRecordAtIndex(int index){
+        return records.get(index);
     }
 }

@@ -46,13 +46,12 @@ public class Table {
                 column.addRecord(null);
         }
     }
-    public HashMap getRow(Column col){
-        int index = columns.indexOf(col);
-        HashMap<String, String> hashMap = new HashMap<>();
+    public List<Record> getRow(int index){
+        List<Record> record = new ArrayList<>();
         for (Column column : columns){
-            hashMap.put(column.getRecordAtIndex(index), column.getType());
+            record.add(column.getRecordAtIndex(index));
         }
-        return hashMap;
+        return record;
     }
     public void addRow(String[] values){
         int i = 2;
@@ -61,6 +60,12 @@ public class Table {
                 column.addRecord(new Record<Integer>(Integer.parseInt(values[i++])));
             else
                 column.addRecord(new Record<String>((values[i++])));
+        }
+    }
+    public void addRow(List<Record> records){
+        int i = 0;
+        for (Column column : columns){
+            column.addRecord(new Record(records.get(i++)));
         }
     }
     public boolean containColumn(String columnName){

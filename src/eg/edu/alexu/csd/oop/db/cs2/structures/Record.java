@@ -5,15 +5,13 @@ public class Record <T>{
     public Record(T v){
         this.value = v;
     }
+    public Record(Record record){
+        this.value = (T) record.getValue();
+    }
     public void setValue(T v){
         this.value = v;
     }
-
     public T getValue() {
         return value;
-    }
-    @Override
-    public String toString(){
-        return ""+this;
     }
 }

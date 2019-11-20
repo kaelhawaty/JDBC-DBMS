@@ -17,11 +17,11 @@ public class test {
         QueriesParser qp = new QueriesParser();
         Scanner scan = new Scanner(System.in);
         qp.execute("create database db1");
-        qp.execute("create table test(age int, size int)");
-        qp.execute("insert into test(age, size) values (20,25)");
-        qp.execute("insert into test(age, size) values (20,25)");
-        qp.execute("insert into test(age, size) values (20,25)");
-        qp.execute("delete from test where age = 20");
+        qp.execute("create table test(age varchar, size int)");
+        qp.execute("insert into test(age, size) values ('AboBakr', 5)");
+        qp.execute("insert into test(age, size) values ('Hazumy',10)");
+        qp.execute("insert into test(age, size) values ('Yomna',3)");
+        qp.execute("delete from test where age >  'Hazumy'");
         while (true){
             s = scan.nextLine();
             qp.execute(s);
