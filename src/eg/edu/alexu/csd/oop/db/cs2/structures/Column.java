@@ -33,4 +33,14 @@ public class Column <T>{
     public void deleteRecord(int index){
         records.remove(index);
     }
+    public int getIndexOfID(Record rec){
+        int i = 0;
+        for (Record record : records){
+            if (rec.getValue() == record.getValue()){
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
 }

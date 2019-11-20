@@ -21,7 +21,7 @@ public class Table {
         for(Column column : tableColumns){
             this.addColumn(column.getName(), column.getType());
         }
-        this.IDCounter = table.getIDCounter();
+        this.IDCounter = 0;
     }
     public int getIDCounter(){
         return IDCounter;
@@ -103,11 +103,10 @@ public class Table {
     public int deleteItems(Table toDelete){
         List<Column> toDeleteColumns = toDelete.getColumns();
         for(int i = 0; i < toDeleteColumns.get(0).getSize(); ++i)
-            this.deleteRow(toDeleteColumns.get(0).getRecordAtIndex(i));
+            this.deleteRow(this.getColumns().get(0).getIndexOfID((Record) (toDeleteColumns.get(0).getRecords().get(i))));
         return toDeleteColumns.get(0).getSize();
     }
-    public void deleteRow(Record toDelete){
-        int index = (Integer)toDelete.getValue();
+    public void deleteRow(int index){
         for (Column column : columns){
             column.deleteRecord(index);
         }

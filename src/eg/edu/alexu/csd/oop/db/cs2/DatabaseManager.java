@@ -125,27 +125,28 @@ public class DatabaseManager implements Database{
             if(query.matches("^\\w+$")){
                 return currentDatabase.clearTable(query);
             }else{
-                String[] split = new String[5];
-                int j = 0;
-                split[0] = new String();
-                query = query.replaceAll("\\s+", " ");
-                for(int i = 0; i < query.length();++i){
-                    if (query.charAt(i)== ' ') {
-                        j++;
-                        split[j] = new String();
-                    }
-                    else if(query.charAt(i)=='=' || query.charAt(i) == '<' || query.charAt(i) == '>'){
-                        j++;
-                        split[j] = String.valueOf(query.charAt(i));
-                        j++;
-                        split[j] = new String();
-                    }else {
-                        split[j]+=String.valueOf(query.charAt(i));
+                String[] split = query.split("\\s+");
+                if (split.length != 5) {
+                    split = new String[5];
+                    int j = 0;
+                    split[0] = new String();
+                    query = query.replaceAll("\\s+", " ");
+                    for (int i = 0; i < query.length(); ++i) {
+                        if (query.charAt(i) == ' ') {
+                            j++;
+                            split[j] = new String();
+                        } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
+                            j++;
+                            split[j] = String.valueOf(query.charAt(i));
+                            j++;
+                            split[j] = new String();
+                        } else {
+                            split[j] += String.valueOf(query.charAt(i));
+                        }
                     }
                 }
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
                 return currentDatabase.deleteItems(split[0], table);
-
             }
         }
         return 0;

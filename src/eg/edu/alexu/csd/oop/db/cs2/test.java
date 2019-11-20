@@ -21,7 +21,7 @@ public class test {
         qp.execute("insert into test(age, size) values ('AboBakr', 5)");
         qp.execute("insert into test(age, size) values ('Hazumy',10)");
         qp.execute("insert into test(age, size) values ('Yomna',3)");
-        qp.execute("delete from test where age >  'Hazumy'");
+        qp.execute("delete from test where age > 'aa'");
         while (true){
             s = scan.nextLine();
             qp.execute(s);

@@ -13,7 +13,7 @@ public class QueriesParser {
             } else if (checkExecuteQuery(input)) {
                 System.out.println("here selection");
             } else if (checkInsertInto(input) || checkDeleteFromTable(input)) {
-                db.executeUpdateQuery(input);
+                System.out.println(db.executeUpdateQuery(input));
             } else {
                 System.out.println("Syntax Error");
             }
