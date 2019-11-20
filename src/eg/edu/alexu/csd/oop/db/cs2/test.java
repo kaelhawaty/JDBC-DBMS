@@ -1,12 +1,5 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import eg.edu.alexu.csd.oop.db.cs2.conditions.Equal;
-import eg.edu.alexu.csd.oop.db.cs2.conditions.GreaterThan;
-import eg.edu.alexu.csd.oop.db.cs2.conditions.LessThan;
-import eg.edu.alexu.csd.oop.db.cs2.structures.DatabaseContainer;
-import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
-
-import java.util.List;
 import java.util.Scanner;
 
 
@@ -21,7 +14,7 @@ public class test {
         qp.execute("insert into test(age, size) values ('AboBakr', 5)");
         qp.execute("insert into test(age, size) values ('Hazumy',10)");
         qp.execute("insert into test(age, size) values ('Yomna',3)");
-        qp.execute("delete from test where age > 'aa'");
+        qp.execute("select * from test where age='Hazumy'");
         while (true){
             s = scan.nextLine();
             qp.execute(s);

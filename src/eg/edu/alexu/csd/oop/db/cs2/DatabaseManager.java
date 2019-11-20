@@ -2,9 +2,11 @@ package eg.edu.alexu.csd.oop.db.cs2;
 
 import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
+import javafx.collections.ObservableArray;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.*;
 
 public class DatabaseManager implements Database{
@@ -83,7 +85,24 @@ public class DatabaseManager implements Database{
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        return new Object[0][];
+        Object[][] objects = null;
+        if (!QueriesParser.checkExecuteQuery(query))
+            throw new SQLException();
+        query = query.toLowerCase();
+        if (query.matches("^\\s*select\\s*\\*\\s*from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'|\\\")\\w+(\\'|\\\")))?\\s*;?\\s*$")){
+            query = query.replaceAll("^\\s*select\\s*\\*\\s*from\\s+", "").replaceAll("\\s*;?\\s*$", "");
+            if(query.matches("^\\w+\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\')$")){
+                String[] split = parseQuery(query);
+                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
+                objects = selectTable(table);
+            }else {
+                Table table = currentDatabase.getTable(query);
+                objects = selectTable(table);
+            }
+        }else{
+
+        }
+        return objects;
     }
 
     @Override
@@ -125,30 +144,50 @@ public class DatabaseManager implements Database{
             if(query.matches("^\\w+$")){
                 return currentDatabase.clearTable(query);
             }else{
-                String[] split = query.split("\\s+");
-                if (split.length != 5) {
-                    split = new String[5];
-                    int j = 0;
-                    split[0] = new String();
-                    query = query.replaceAll("\\s+", " ");
-                    for (int i = 0; i < query.length(); ++i) {
-                        if (query.charAt(i) == ' ') {
-                            j++;
-                            split[j] = new String();
-                        } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
-                            j++;
-                            split[j] = String.valueOf(query.charAt(i));
-                            j++;
-                            split[j] = new String();
-                        } else {
-                            split[j] += String.valueOf(query.charAt(i));
-                        }
-                    }
-                }
+                String[] split = parseQuery(query);
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
                 return currentDatabase.deleteItems(split[0], table);
             }
         }
         return 0;
+    }
+    private String[] parseQuery(String query){
+        String[] split = query.split("\\s+");
+        if (split.length != 5) {
+            split = new String[5];
+            int j = 0;
+            split[0] = new String();
+            query = query.replaceAll("\\s+", " ");
+            for (int i = 0; i < query.length(); ++i) {
+                if (query.charAt(i) == ' ') {
+                    j++;
+                    split[j] = new String();
+                } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
+                    j++;
+                    split[j] = String.valueOf(query.charAt(i));
+                    j++;
+                    split[j] = new String();
+                } else {
+                    split[j] += String.valueOf(query.charAt(i));
+                }
+            }
+        }
+        return split;
+    }
+    private Object[][] selectTable(Table table){
+        Object[][] objects;
+        List<Column> columns = table.getColumns();
+        objects = new Object[columns.get(0).getRecords().size()][columns.size()];
+        int i = 0, j = 0;
+        for (Column column : columns) {
+            List<Record> records = column.getRecords();
+            i = 0;
+            for (Record record : records) {
+                objects[i][j] = record.getValue();
+                i++;
+            }
+            j++;
+        }
+        return objects;
     }
 }

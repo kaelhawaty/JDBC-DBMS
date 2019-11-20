@@ -11,7 +11,13 @@ public class QueriesParser {
             if (checkCreateDatabase(input) || checkDropDatabase(input) || checkCreateTable(input) || checkDropTable(input)) {
                 db.executeStructureQuery(input);
             } else if (checkExecuteQuery(input)) {
-                System.out.println("here selection");
+                Object[][] table = db.executeQuery(input);
+                for (int i = 0; i < table.length; i++){
+                    for (int j = 0; j < table[i].length; j++){
+                        System.out.print(table[i][j]+" ");
+                    }
+                    System.out.println();
+                }
             } else if (checkInsertInto(input) || checkDeleteFromTable(input)) {
                 System.out.println(db.executeUpdateQuery(input));
             } else {
