@@ -1,5 +1,8 @@
-package eg.edu.alexu.csd.oop.db.cs2;
+package eg.edu.alexu.csd.oop.db.cs2.controller;
 
+
+import eg.edu.alexu.csd.oop.db.cs2.Database;
+import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 
 import java.sql.SQLException;
 

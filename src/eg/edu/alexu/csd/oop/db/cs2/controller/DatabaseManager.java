@@ -1,15 +1,17 @@
-package eg.edu.alexu.csd.oop.db.cs2;
+package eg.edu.alexu.csd.oop.db.cs2.controller;
 
+import eg.edu.alexu.csd.oop.db.cs2.ConditionsFilter;
+import eg.edu.alexu.csd.oop.db.cs2.Database;
+import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.FilesHandler;
 import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
-import javafx.collections.ObservableArray;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.*;
 
-public class DatabaseManager implements Database{
+public class DatabaseManager implements Database {
     private static DatabaseManager instance = new DatabaseManager();
     private DatabaseContainer currentDatabase;
     private FilesHandler filesHandler = new FilesHandler();

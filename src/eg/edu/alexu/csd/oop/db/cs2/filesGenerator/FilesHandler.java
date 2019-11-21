@@ -1,4 +1,4 @@
-package eg.edu.alexu.csd.oop.db.cs2;
+package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
 import java.io.File;
 import java.io.IOException;

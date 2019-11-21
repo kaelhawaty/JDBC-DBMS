@@ -1,9 +1,11 @@
-package eg.edu.alexu.csd.oop.db.cs2;
+package eg.edu.alexu.csd.oop.db.cs2.UI;
+
+import eg.edu.alexu.csd.oop.db.cs2.controller.QueriesParser;
 
 import java.util.Scanner;
 
 
-public class test {
+public class UI {
 
     public static void main(String argv[]){
         String s = "";
