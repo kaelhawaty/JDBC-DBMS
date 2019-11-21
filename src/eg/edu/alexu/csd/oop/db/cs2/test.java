@@ -11,7 +11,7 @@ public class test {
         Scanner scan = new Scanner(System.in);
         qp.execute("create database db1");
         qp.execute("create table test(age varchar, size int)");
-        qp.execute("insert into test(age, size) values ('AboBakr', 5)");
+        qp.execute("insert into test(size) values (5)");
         qp.execute("insert into test(age, size) values ('Hazumy',10)");
         qp.execute("insert into test(age, size) values ('Yomna',3)");
         qp.execute("select * from test where age='Hazumy'");

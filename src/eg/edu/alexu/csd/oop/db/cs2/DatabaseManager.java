@@ -86,21 +86,38 @@ public class DatabaseManager implements Database{
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
         Object[][] objects = null;
+        query = query.toLowerCase();
         if (!QueriesParser.checkExecuteQuery(query))
             throw new SQLException();
-        query = query.toLowerCase();
         if (query.matches("^\\s*select\\s*\\*\\s*from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'|\\\")\\w+(\\'|\\\")))?\\s*;?\\s*$")){
             query = query.replaceAll("^\\s*select\\s*\\*\\s*from\\s+", "").replaceAll("\\s*;?\\s*$", "");
             if(query.matches("^\\w+\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\')$")){
                 String[] split = parseQuery(query);
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
-                objects = selectTable(table);
+                List<Column> columns = table.getColumns();
+                columns.remove(0);
+                objects = selectTable(table.getColumns());
             }else {
                 Table table = currentDatabase.getTable(query);
-                objects = selectTable(table);
+                List<Column> columns = table.getColumns();
+                columns.remove(0);
+                objects = selectTable(columns);
             }
         }else{
-
+            query = query.replaceAll("^\\s*select\\s+", "").replaceAll("\\s*;?\\s*$","");
+            Pattern regex = Pattern.compile("^(\\w+\\s*,\\s*)*\\w+\\s+");
+            Matcher match = regex.matcher(query);
+            match.find();
+            String[] columns = match.group().replaceAll(",", " ").split("\\s+");
+            query = query.replaceAll("^(\\w+\\s*,\\s*)*\\w+\\s+from\\s+", "");
+            if (query.matches("\\w+")){
+                Table table = currentDatabase.getTable(query);
+                objects = selectTable(table.getColumns(columns));
+            }else{
+                String[] split = parseQuery(query);
+                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
+                objects = selectTable(table.getColumns(columns));
+            }
         }
         return objects;
     }
@@ -174,9 +191,8 @@ public class DatabaseManager implements Database{
         }
         return split;
     }
-    private Object[][] selectTable(Table table){
+    private Object[][] selectTable(List<Column> columns){
         Object[][] objects;
-        List<Column> columns = table.getColumns();
         objects = new Object[columns.get(0).getRecords().size()][columns.size()];
         int i = 0, j = 0;
         for (Column column : columns) {

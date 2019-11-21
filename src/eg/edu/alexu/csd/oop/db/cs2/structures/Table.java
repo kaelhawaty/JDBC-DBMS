@@ -90,6 +90,17 @@ public class Table {
     public List<Column> getColumns(){
         return columns;
     }
+    public List<Column> getColumns(String[] columnsName){
+        List<Column> matched = new ArrayList<>();
+        for (String columnName : columnsName){
+            for (Column column : columns){
+                if (columnName.equals(column.getName())){
+                    matched.add(column);
+                }
+            }
+        }
+        return matched;
+    }
     public int clear(){
         if(columns.size()==0)
             return 0;
