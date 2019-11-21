@@ -122,4 +122,12 @@ public class Table {
             column.deleteRecord(index);
         }
     }
+    public void updateallcolumn(HashMap colhash ){
+
+        for (Column column : columns){
+            if(colhash.containsKey(column.getName())){
+                column.allcolequal((String) colhash.get(column.getName()));
+            }
+        }
+    }
 }

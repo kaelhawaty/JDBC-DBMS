@@ -175,6 +175,82 @@ public class DatabaseManager implements Database {
                 return currentDatabase.deleteItems(split[0], table);
             }
         }
+        else if(QueriesParser.checkUpdate(query)){
+            HashMap<String, String> hashMap = new HashMap<>();
+            query = query.toLowerCase();
+            query = query.replaceAll("^\\s*update\\s+", "").replaceAll("\\s*;?\\s*$", "");
+            if(query.matches("^\\w+\\s+set\\s+(\\w\\s*=\\s*(\\'\\s*\\w\\s*\\')\\s*,\\s*)*\\s*(\\w\\s*=\\s*(\\'\\s*\\w\\s*\\')\\s*)$")){
+                int ii=0;
+                String name=null;
+                while(query!=" "){
+                    name+=query.charAt(ii);
+                    ii++;
+                }
+                if(!(filesHandler.isTableExist(name, currentDatabase.getName()))) {
+                    throw new SQLException();
+                }
+                query = query.replaceAll("^\\w+\\s+set\\s+", "");
+                query = query.replaceAll("\\s+", "");
+                query = query.replaceAll("\\'", "");
+                query = query.replaceAll("\\,", " ");
+                String[] split = query.split("\\s+");
+
+                for(int i=0;i<split.length;i++){
+                    String[] splitt = split[i].split("=");
+                    hashMap.put(splitt[0],splitt[1]);
+                }
+                currentDatabase.getTable(name).updateallcolumn(hashMap);
+                return currentDatabase.getTable(name).getIDCounter();
+            }
+            else{
+                int ii=0;
+                String name=null;
+                while(query!=" "){
+                    name+=query.charAt(ii);
+                    ii++;
+                }
+                if(!(filesHandler.isTableExist(name, currentDatabase.getName()))) {
+                    throw new SQLException();
+                }
+                query = query.replaceAll("^\\w+\\s+set\\s+", "");
+                String[] split1 = query.split("where");
+                split1[0] = split1[0].replaceAll("\\s+", "");
+                split1[0] = split1[0].replaceAll("\\'", "");
+                split1[0] = split1[0].replaceAll("\\,", " ");
+                String[] split2 = query.split("\\s+");
+                for(int i=0;i<split2.length;i++){
+                    String[] splitt = split2[i].split("=");
+                    hashMap.put(splitt[0],splitt[1]);
+                }
+
+                String[] split = split1[1].split("\\s+");
+                if (split.length != 3) {
+                    split = new String[3];
+                    int j = 0;
+                    split[0] = new String();
+                    query = query.replaceAll("\\s+", " ");
+                    for (int i = 0; i < split1[1].length(); ++i) {
+                        if (query.charAt(i) == ' ') {
+                            j++;
+                            split[j] = new String();
+                        } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
+                            j++;
+                            split[j] = String.valueOf(query.charAt(i));
+                            j++;
+                            split[j] = new String();
+                        } else {
+                            split[j] += String.valueOf(query.charAt(i));
+                        }
+                    }
+                }
+                Table table = aSwitch.meetCondition(split[1], currentDatabase.getTable(name), split[0], split[2]);
+                table.updateallcolumn(hashMap);
+
+
+
+            }
+        }
+
         else
             return 0;
     }

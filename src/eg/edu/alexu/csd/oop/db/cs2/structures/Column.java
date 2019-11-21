@@ -43,4 +43,10 @@ public class Column <T>{
         }
         return -1;
     }
+    public void allcolequal(String value){
+        for (Record record : records){
+            record.setValue((T)value);
+        }
+
+    }
 }
