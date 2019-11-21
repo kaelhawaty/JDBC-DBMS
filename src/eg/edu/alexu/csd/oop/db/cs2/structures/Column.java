@@ -48,4 +48,7 @@ public class Column <T>{
             record.setValue(value);
         }
     }
+    public void updateRecord(int index, Record newRecord){
+        this.records.get(index).setValue((T)newRecord.getValue());
+    }
 }

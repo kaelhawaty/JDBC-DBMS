@@ -17,11 +17,9 @@ public class LessThan implements ConditionsFilter {
             if (!column.getName().equals(columnName))
                 continue;
             for (Record record : records){
-                if(column.getType().equalsIgnoreCase("int")){
-                    if (record != null && value.compareTo((String)record.getValue()) > 0) {
-                        List<Record> rowInfo = table.getRow(i);
-                        meetTable.addRow(rowInfo);
-                    }
+                if (record != null && value.compareTo((String)record.getValue()) > 0) {
+                    List<Record> rowInfo = table.getRow(i);
+                    meetTable.addRow(rowInfo);
                 }
                 i++;
             }

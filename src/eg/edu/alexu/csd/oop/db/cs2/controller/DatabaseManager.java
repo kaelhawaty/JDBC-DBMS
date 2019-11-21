@@ -58,8 +58,6 @@ public class DatabaseManager implements Database {
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
-            if (filesHandler.isDatabaseExist(databaseName))
-                return false;
             currentDatabase = new DatabaseContainer(databaseName);
             databases.add(currentDatabase);
             filesHandler.createDatabase(databaseName);
@@ -69,8 +67,6 @@ public class DatabaseManager implements Database {
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
-            if(!filesHandler.isDatabaseExist(databaseName))
-                return false;
             if (currentDatabase.getName().equalsIgnoreCase(databaseName)){
                 databases.remove(currentDatabase);
                 currentDatabase = (databases.size() < 1 ) ? null : databases.get(databases.size()-1);
@@ -221,17 +217,33 @@ public class DatabaseManager implements Database {
             query = query.replaceAll("(?i)^\\s*update\\s+", "").replaceAll("\\s*;?\\s*$", "");
             if(query.toLowerCase().matches("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)$")){
                 String[] split = query.replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
-                if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
+                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName()))
                     throw new SQLException();
                 for (int i = 2; i < split.length; i+=2){
                     if (!currentDatabase.getTable(split[0].toLowerCase()).containColumn(split[i].toLowerCase()))
                         throw new SQLException();
                 }
-                currentDatabase.getTable(split[0]).updateTable(split);
-                return currentDatabase.getTable(split[0]).getIDCounter();
+                currentDatabase.getTable(split[0].toLowerCase()).updateTable(split);
+                return currentDatabase.getTable(split[0].toLowerCase()).getIDCounter();
             }
             else{
-                return 5555;
+                Pattern pattern = Pattern.compile("(?i)^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)");
+                Matcher matcher = pattern.matcher(query);
+                matcher.find();
+                String[] split = matcher.group().replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
+                query = query.toLowerCase().replaceAll("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)", "");
+                String[] condition = parseQuery(query);
+                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName()))
+                    throw new SQLException();
+                for (int i = 2; i < split.length; i+=2){
+                    if (!currentDatabase.getTable(split[0].toLowerCase()).containColumn(split[i].toLowerCase()))
+                        throw new SQLException();
+                }
+                Table table = aSwitch.meetCondition(condition[2], currentDatabase.getTable(split[0].toLowerCase()), condition[1], condition[3]);
+                table.updateTable(split);
+                currentDatabase.getTable(split[0].toLowerCase()).updateTable(table);
+                return table.getIDCounter();
+
             }
         }
         else

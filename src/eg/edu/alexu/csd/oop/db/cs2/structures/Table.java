@@ -115,6 +115,17 @@ public class Table {
             getColumn(info[i]).updateAllRecords(info[i+1]);
         }
     }
+    public void updateTable(Table toUpdate){
+        List<Column> toUpdateColumns = toUpdate.getColumns();
+        for(int i = 0; i < toUpdateColumns.get(0).getSize(); ++i)
+            this.updateRow(columns.get(0).getIndexOfID((Record)toUpdateColumns.get(0).getRecords().get(i)), toUpdate.getRow(i));
+    }
+    private void updateRow(int index, List<Record> values){
+        int i = 0;
+        for (Column column : columns){
+            column.updateRecord(index, values.get(i++));
+        }
+    }
     private Column getColumn(String columnName){
         for (Column column : columns){
             if (column.getName().equalsIgnoreCase(columnName))
