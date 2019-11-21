@@ -18,12 +18,12 @@ public class GreaterThan implements ConditionsFilter {
                 continue;
             for (Record record : records){
                 if(column.getType().equalsIgnoreCase("int")){
-                    if ((Integer)record.getValue() > Integer.parseInt(value)){
+                    if (record != null && (Integer)record.getValue() > Integer.parseInt(value)){
                         List<Record> rowInfo = table.getRow(i);
                         meetTable.addRow(rowInfo);
                     }
                 }else{
-                    if(value.compareTo((String) record.getValue()) < 0){
+                    if(record != null && value.compareToIgnoreCase((String) record.getValue()) < 0){
                         List<Record> rowInfo = table.getRow(i);
                         meetTable.addRow(rowInfo);
                     }

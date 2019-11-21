@@ -18,12 +18,12 @@ public class Equal implements ConditionsFilter {
                 continue;
             for (Record record : records){
                 if(column.getType().equalsIgnoreCase("int")){
-                    if ((Integer)record.getValue()==Integer.parseInt(value)){
+                    if (record != null && (Integer)record.getValue()==Integer.parseInt(value)){
                        List<Record> rowInfo = table.getRow(i);
                        meetTable.addRow(rowInfo);
                     }
                 }else{
-                    if(value.equals((String) record.getValue())) {
+                    if(record != null && value.equalsIgnoreCase((String) record.getValue())) {
                         List<Record> rowInfo = table.getRow(i);
                         meetTable.addRow(rowInfo);
                     }

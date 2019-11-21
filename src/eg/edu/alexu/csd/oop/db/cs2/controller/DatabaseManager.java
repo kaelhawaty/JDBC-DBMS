@@ -19,6 +19,7 @@ public class DatabaseManager implements Database {
     private ConditionsFilter greater = new GreaterThan();
     private ConditionsFilter less = new LessThan();
     private Switch aSwitch = new Switch();
+    private boolean flag;
     private DatabaseManager(){
         aSwitch.register("=", equal);
         aSwitch.register("<", less);
@@ -72,6 +73,7 @@ public class DatabaseManager implements Database {
                 return false;
             filesHandler.createTable(tableInfo[0], currentDatabase.getName());
             currentDatabase.addTable(tableInfo);
+            flag = true;
             return true;
         }else if (QueriesParser.checkDropTable(query)){
             query = query.replaceAll("^\\s*drop\\s+table\\s+", "").replaceAll("\\s*;?\\s*$", "");
@@ -87,7 +89,7 @@ public class DatabaseManager implements Database {
 
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
-        Object[][] objects = null;
+        Object[][] objects;
         query = query.toLowerCase();
         if (!QueriesParser.checkExecuteQuery(query))
             throw new SQLException();
@@ -97,12 +99,18 @@ public class DatabaseManager implements Database {
                 String[] split = parseQuery(query);
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
                 List<Column> columns = table.getColumns();
-                columns.remove(0);
+                if (flag) {
+                    columns.remove(0);
+                    flag = false;
+                }
                 objects = selectTable(table.getColumns());
             }else {
                 Table table = currentDatabase.getTable(query);
                 List<Column> columns = table.getColumns();
-                columns.remove(0);
+                if (flag) {
+                    columns.remove(0);
+                    flag = false;
+                }
                 objects = selectTable(columns);
             }
         }else{
@@ -126,35 +134,34 @@ public class DatabaseManager implements Database {
 
     @Override
     public int executeUpdateQuery(String query) throws SQLException {
-        query = query.toLowerCase();
         if (QueriesParser.checkInsertInto(query)){
             HashMap<String, String> hashMap = new HashMap<>();
-            if (query.matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$")){
-                query = query.replaceAll("^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
+            if (query.toLowerCase().matches("^\\s*insert\\s+into\\s+\\w+\\s*\\((\\s*\\w+\\s*,)*\\s*\\w+\\s*\\)\\s*values\\s*\\((\\s*([0-9]+|\\'\\w+\\')\\s*,)*\\s*([0-9]+|\\'\\w+\\')\\s*\\)\\s*;?\\s*$")){
+                query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
                 query = query.replaceAll("[\\(\\),]", " ");
                 String [] split = query.split("\\s+");
-                if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
+                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName())))
                     throw  new SQLException();
-                if(split.length%2 == 0 && split[split.length/2].equals("values")){
-                    hashMap.put("ID" ,String.valueOf(currentDatabase.getTable(split[0]).getIDCounter()));
+                if(split.length%2 == 0 && split[split.length/2].equalsIgnoreCase("values")){
+                    hashMap.put("ID" ,String.valueOf(currentDatabase.getTable(split[0].toLowerCase()).getIDCounter()));
                    for(int i = 1; i < split.length/2; ++i){
-                       if(currentDatabase.containColumn(split[0], split[i]))
-                            hashMap.put(split[i], split[i+split.length/2]);
+                       if(currentDatabase.containColumn(split[0].toLowerCase(), split[i].toLowerCase()))
+                            hashMap.put(split[i].toLowerCase(), split[i+split.length/2]);
                        else
                            throw new SQLException();
                    }
                 }else
                     throw new SQLException();
-                currentDatabase.insertRow(split[0], hashMap);
+                currentDatabase.insertRow(split[0].toLowerCase(), hashMap);
             }else{
-                query = query.replaceAll("^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
+                query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
                 query = query.replaceAll("[\\(\\),]", " ");
                 String [] split = query.split("\\s+");
-                if(!(filesHandler.isTableExist(split[0], currentDatabase.getName())))
+                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName())))
                     throw  new SQLException();
-                if (split.length-1 != currentDatabase.getTableNumOfColumns(split[0]))
+                if (split.length-1 != currentDatabase.getTableNumOfColumns(split[0].toLowerCase()))
                     throw new SQLException();
-                currentDatabase.insertRow(split[0], split);
+                currentDatabase.insertRow(split[0].toLowerCase(), split);
             }
             return 1;
         }else if (QueriesParser.checkDeleteFromTable(query)){
@@ -168,27 +175,28 @@ public class DatabaseManager implements Database {
                 return currentDatabase.deleteItems(split[0], table);
             }
         }
-        return 0;
+        else
+            return 0;
     }
     private String[] parseQuery(String query){
-        String[] split = query.split("\\s+");
-        if (split.length != 5) {
-            split = new String[5];
-            int j = 0;
-            split[0] = new String();
-            query = query.replaceAll("\\s+", " ");
-            for (int i = 0; i < query.length(); ++i) {
-                if (query.charAt(i) == ' ') {
+        String[] split = new String[5];
+        int j = 0;
+        split[0] = new String();
+        query = query.replaceAll("\\s+", " ");
+        for (int i = 0; i < query.length(); ++i) {
+            if (query.charAt(i) == ' ' && !(query.charAt(i-1) == '=' || query.charAt(i-1) == '<' || query.charAt(i-1) == '>')) {
+                j++;
+                split[j] = new String();
+            } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
+                if (query.charAt(i-1) != ' ')
                     j++;
-                    split[j] = new String();
-                } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
-                    j++;
-                    split[j] = String.valueOf(query.charAt(i));
-                    j++;
-                    split[j] = new String();
-                } else {
-                    split[j] += String.valueOf(query.charAt(i));
-                }
+                split[j] = String.valueOf(query.charAt(i));
+                j++;
+                split[j] = new String();
+            } else {
+                if(query.charAt(i) == ' ')
+                    continue;
+                split[j] += String.valueOf(query.charAt(i));
             }
         }
         return split;
@@ -201,7 +209,7 @@ public class DatabaseManager implements Database {
             List<Record> records = column.getRecords();
             i = 0;
             for (Record record : records) {
-                objects[i][j] = record.getValue();
+                objects[i][j] = (record == null) ? null : record.getValue();
                 i++;
             }
             j++;
