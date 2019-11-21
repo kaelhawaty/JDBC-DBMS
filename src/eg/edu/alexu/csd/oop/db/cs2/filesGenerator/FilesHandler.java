@@ -14,6 +14,8 @@ public class FilesHandler {
         return mainPath.getAbsolutePath()+fileSeparator+name;
     }
     public boolean isDatabaseExist(String name){
+        if (name == null)
+            return false;
         File f = new File(mainPath+fileSeparator+name);
         return f.exists();
     }
@@ -45,6 +47,8 @@ public class FilesHandler {
         }
     }
     public boolean isTableExist(String tableName, String databaseName){
+        if (tableName == null || databaseName == null)
+            return false;
         File xml = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
         File dtd = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
         return xml.exists() && dtd.exists();

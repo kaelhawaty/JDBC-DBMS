@@ -30,22 +30,13 @@ public class Table {
         return name;
     }
     public void addColumn(String name, String type){
-        Column column;
-        if (type.equalsIgnoreCase("int")) {
-            column = new Column<Integer>(name, type);
-        }else {
-            column = new Column<String>(name, type);
-        }
+        Column column = new Column(name, type);
         columns.add(column);
     }
     public void addRow(HashMap values){
         for (Column column : columns){
-            if(values.containsKey(column.getName())){
-                if (column.getType().equalsIgnoreCase("int"))
-                    column.addRecord(new Record<Integer>(Integer.parseInt((String) values.get(column.getName()))));
-                else
-                    column.addRecord(new Record<String>((String) values.get(column.getName())));
-            }
+            if(values.containsKey(column.getName()))
+                column.addRecord(new Record(values.get(column.getName())));
             else
                 column.addRecord(null);
         }
@@ -62,10 +53,7 @@ public class Table {
         int i = 2;
         columns.get(0).addRecord(new Record<Integer>(IDCounter));
         for (int j = 1; j < columns.size(); ++j){
-            if (columns.get(j).getType().equalsIgnoreCase("int"))
-                columns.get(j).addRecord(new Record<Integer>(Integer.parseInt(values[i++])));
-            else
-                columns.get(j).addRecord(new Record<String>((values[i++])));
+            columns.get(j).addRecord(new Record(values[i++]));
         }
         this.IDCounter++;
     }
@@ -117,17 +105,21 @@ public class Table {
             this.deleteRow(this.getColumns().get(0).getIndexOfID((Record) (toDeleteColumns.get(0).getRecords().get(i))));
         return toDeleteColumns.get(0).getSize();
     }
-    public void deleteRow(int index){
+    private void deleteRow(int index){
         for (Column column : columns){
             column.deleteRecord(index);
         }
     }
-    public void updateallcolumn(HashMap colhash ){
-
-        for (Column column : columns){
-            if(colhash.containsKey(column.getName())){
-                column.allcolequal((String) colhash.get(column.getName()));
-            }
+    public void updateTable(String[] info){
+        for(int i = 2; i < info.length; i+=2){
+            getColumn(info[i]).updateAllRecords(info[i+1]);
         }
+    }
+    private Column getColumn(String columnName){
+        for (Column column : columns){
+            if (column.getName().equalsIgnoreCase(columnName))
+                return column;
+        }
+        return null;
     }
 }

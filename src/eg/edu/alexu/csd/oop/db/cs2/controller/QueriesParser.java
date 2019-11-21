@@ -20,7 +20,7 @@ public class QueriesParser {
                     }
                     System.out.println();
                 }
-            } else if (checkInsertInto(input) || checkDeleteFromTable(input)) {
+            } else if (checkInsertInto(input) || checkDeleteFromTable(input) || checkUpdate(input)) {
                 System.out.println(db.executeUpdateQuery(input));
             } else {
                 System.out.println("Syntax Error");
