@@ -17,10 +17,19 @@ public class GreaterThan implements ConditionsFilter {
             if (!column.getName().equals(columnName))
                 continue;
             for (Record record : records){
-                    if (record != null && value.compareTo((String)record.getValue()) < 0) {
+                if(column.getType().equalsIgnoreCase("int")) {
+                    int x = Integer.parseInt(value);
+                    int y =  Integer.parseInt((String) record.getValue());
+                    if (record != null && y > x) {
                         List<Record> rowInfo = table.getRow(i);
                         meetTable.addRow(rowInfo);
                     }
+                }else{
+                    if (record != null && value.compareTo((String) record.getValue()) < 0) {
+                        List<Record> rowInfo = table.getRow(i);
+                        meetTable.addRow(rowInfo);
+                    }
+                }
                 i++;
             }
         }

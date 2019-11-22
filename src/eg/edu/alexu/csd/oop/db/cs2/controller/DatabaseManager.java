@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Spliterator;
 import java.util.regex.*;
 
 public class DatabaseManager implements Database {
@@ -67,7 +66,7 @@ public class DatabaseManager implements Database {
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
-            if (currentDatabase.getName().equalsIgnoreCase(databaseName)){
+            if (currentDatabase != null && currentDatabase.getName().equalsIgnoreCase(databaseName)){
                 databases.remove(currentDatabase);
                 currentDatabase = (databases.size() < 1 ) ? null : databases.get(databases.size()-1);
             }else{
@@ -115,22 +114,12 @@ public class DatabaseManager implements Database {
                 if (!currentDatabase.getTable(split[0]).containColumn(split[2]))
                     throw new SQLException();
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
-                List<Column> columns = table.getColumns();
-                if (flag) {
-                    columns.remove(0);
-                    flag = false;
-                }
-                objects = selectTable(table.getColumns());
+                objects = selectTable(table.getColumns(), true);
             }else {
                 Table table = currentDatabase.getTable(query);
                 if(!filesHandler.isTableExist(table.getName(), currentDatabase.getName()))
                     throw new SQLException();
-                List<Column> columns = table.getColumns();
-                if (flag) {
-                    columns.remove(0);
-                    flag = false;
-                }
-                objects = selectTable(columns);
+                objects = selectTable(table.getColumns(), true);
             }
         }else{
             query = query.replaceAll("^\\s*select\\s+", "").replaceAll("\\s*;?\\s*$","");
@@ -147,7 +136,7 @@ public class DatabaseManager implements Database {
                     if(!table.containColumn(columnName))
                         throw new SQLException();
                 }
-                objects = selectTable(table.getColumns(columns));
+                objects = selectTable(table.getColumns(columns), false);
             }else{
                 String[] split = parseQuery(query);
                 if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
@@ -157,7 +146,7 @@ public class DatabaseManager implements Database {
                         throw new SQLException();
                 }
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], split[4]);
-                objects = selectTable(table.getColumns(columns));
+                objects = selectTable(table.getColumns(columns), false);
             }
         }
         return objects;
@@ -272,15 +261,21 @@ public class DatabaseManager implements Database {
         }
         return split;
     }
-    private Object[][] selectTable(List<Column> columns){
+    private Object[][] selectTable(List<Column> columns, boolean flag){
         Object[][] objects;
-        objects = new Object[columns.get(0).getRecords().size()][columns.size()];
         int i = 0, j = 0;
+        if(flag)
+            i = 1;
+        objects = new Object[columns.get(0).getRecords().size()][columns.size()-i];
         for (Column column : columns) {
+            if (flag){
+                flag = false;
+                continue;
+            }
             List<Record> records = column.getRecords();
             i = 0;
             for (Record record : records) {
-                objects[i][j] = (record == null) ? null : record.getValue();
+                objects[i][j] = (record == null) ? null : (column.getType().equalsIgnoreCase("int")) ? Integer.parseInt((String) record.getValue()) : record.getValue();
                 i++;
             }
             j++;

@@ -43,7 +43,7 @@ public class Column <T>{
         }
         return -1;
     }
-    public void updateAllRecords(String value){
+    public void updateAllRecords(T value){
         for (Record record : records){
             record.setValue(value);
         }

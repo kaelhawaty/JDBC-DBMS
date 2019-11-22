@@ -48,9 +48,6 @@ public class DatabaseContainer {
         Table table = getTable(tableName);
         return table.getSize();
     }
-    public List<Table> getTables(){
-        return tables;
-    }
     public int clearTable(String tableName){
         Table table = getTable(tableName);
         return table.clear();
