@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,20 +32,19 @@ public class Table {
     }
     public void addColumn(String name, String type){
         Column column;
-        if (type.equalsIgnoreCase("int")) {
+        if (type.equalsIgnoreCase("int"))
             column = new Column<Integer>(name, type);
-        }else {
+        else
             column = new Column<String>(name, type);
-        }
         columns.add(column);
     }
     public void addRow(HashMap values){
         for (Column column : columns){
             if(values.containsKey(column.getName())){
-                if (column.getType().equalsIgnoreCase("int"))
-                    column.addRecord(new Record<Integer>(Integer.parseInt((String) values.get(column.getName()))));
+                if (column.getName().equalsIgnoreCase("int"))
+                    column.addRecord(new Record<>(Integer.parseInt((String) values.get(column.getName()))));
                 else
-                    column.addRecord(new Record<String>((String) values.get(column.getName())));
+                    column.addRecord(new Record<>(values.get(column.getName())));
             }
             else
                 column.addRecord(null);
@@ -60,12 +60,12 @@ public class Table {
     }
     public void addRow(String[] values){
         int i = 2;
-        columns.get(0).addRecord(new Record<Integer>(IDCounter));
+        columns.get(0).addRecord(new Record<>(IDCounter));
         for (int j = 1; j < columns.size(); ++j){
             if (columns.get(j).getType().equalsIgnoreCase("int"))
-                columns.get(j).addRecord(new Record<Integer>(Integer.parseInt(values[i++])));
+                columns.get(j).addRecord(new Record<>(Integer.parseInt((values[i++]))));
             else
-                columns.get(j).addRecord(new Record<String>((values[i++])));
+                columns.get(j).addRecord(new Record(values[i++]));
         }
         this.IDCounter++;
     }
@@ -117,9 +117,32 @@ public class Table {
             this.deleteRow(this.getColumns().get(0).getIndexOfID((Record) (toDeleteColumns.get(0).getRecords().get(i))));
         return toDeleteColumns.get(0).getSize();
     }
-    public void deleteRow(int index){
+    private void deleteRow(int index){
         for (Column column : columns){
             column.deleteRecord(index);
         }
+    }
+    public void updateTable(String[] info){
+        for(int i = 2; i < info.length; i+=2){
+            getColumn(info[i]).updateAllRecords(info[i+1]);
+        }
+    }
+    public void updateTable(Table toUpdate){
+        List<Column> toUpdateColumns = toUpdate.getColumns();
+        for(int i = 0; i < toUpdateColumns.get(0).getSize(); ++i)
+            this.updateRow(columns.get(0).getIndexOfID((Record)toUpdateColumns.get(0).getRecords().get(i)), toUpdate.getRow(i));
+    }
+    private void updateRow(int index, List<Record> values){
+        int i = 0;
+        for (Column column : columns){
+            column.updateRecord(index, values.get(i++));
+        }
+    }
+    private Column getColumn(String columnName){
+        for (Column column : columns){
+            if (column.getName().equalsIgnoreCase(columnName))
+                return column;
+        }
+        return null;
     }
 }

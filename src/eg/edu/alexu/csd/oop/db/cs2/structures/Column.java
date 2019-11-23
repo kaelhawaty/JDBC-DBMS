@@ -43,4 +43,12 @@ public class Column <T>{
         }
         return -1;
     }
+    public void updateAllRecords(T value){
+        for (Record record : records){
+            record.setValue(value);
+        }
+    }
+    public void updateRecord(int index, Record newRecord){
+        this.records.get(index).setValue((T)newRecord.getValue());
+    }
 }
