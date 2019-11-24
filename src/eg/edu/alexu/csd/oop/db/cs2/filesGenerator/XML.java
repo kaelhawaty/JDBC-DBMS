@@ -26,7 +26,8 @@ public class XML {
             Document doc = dBuilder.newDocument();
             //add elements to Document
             Element rootElement =
-                    doc.createElementNS(table.getName(), "TableName");
+                    doc.createElement("Table");
+            rootElement.setAttribute("name",table.getName());
             //append root element to document
             doc.appendChild(rootElement);
 
@@ -42,12 +43,12 @@ public class XML {
             DOMSource source = new DOMSource(doc);
 
             //write to console or file
-            StreamResult console = new StreamResult(System.out);
+            //StreamResult console = new StreamResult(System.out);
             StreamResult file = new StreamResult(new File(filesHandler.getPathOf(table.getName())));
 
-            transformer.transform(source, console);
+           // transformer.transform(source, console);
             transformer.transform(source, file);
-            System.out.println("DONE");
+            //System.out.println("DONE");
 
         } catch (Exception e) {
             e.printStackTrace();
