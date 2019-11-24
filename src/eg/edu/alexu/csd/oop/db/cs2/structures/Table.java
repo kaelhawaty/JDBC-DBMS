@@ -31,21 +31,12 @@ public class Table {
         return name;
     }
     public void addColumn(String name, String type){
-        Column column;
-        if (type.equalsIgnoreCase("int"))
-            column = new Column<Integer>(name, type);
-        else
-            column = new Column<String>(name, type);
-        columns.add(column);
+        columns.add(new Column(name, type));
     }
     public void addRow(HashMap values){
         for (Column column : columns){
-            if(values.containsKey(column.getName())){
-                if (column.getName().equalsIgnoreCase("int"))
-                    column.addRecord(new Record<>(Integer.parseInt((String) values.get(column.getName()))));
-                else
-                    column.addRecord(new Record<>(values.get(column.getName())));
-            }
+            if(values.containsKey(column.getName()))
+                column.addRecord(new Record(values.get(column.getName())));
             else
                 column.addRecord(null);
         }
@@ -61,26 +52,20 @@ public class Table {
     public void addRow(String[] values){
         int i = 2;
         columns.get(0).addRecord(new Record<>(IDCounter));
-        for (int j = 1; j < columns.size(); ++j){
-            if (columns.get(j).getType().equalsIgnoreCase("int"))
-                columns.get(j).addRecord(new Record<>(Integer.parseInt((values[i++]))));
-            else
-                columns.get(j).addRecord(new Record(values[i++]));
-        }
+        for (int j = 1; j < columns.size(); ++j)
+            columns.get(j).addRecord(new Record(values[i++]));
         this.IDCounter++;
     }
     public void addRow(List<Record> records){
         int i = 0;
-        for (Column column : columns){
+        for (Column column : columns)
             column.addRecord(new Record(records.get(i++)));
-        }
         this.IDCounter++;
     }
     public boolean containColumn(String columnName){
         for (Column column:columns){
-            if(column.getName().equals(columnName)){
+            if(column.getName().equals(columnName))
                 return true;
-            }
         }
         return false;
     }
