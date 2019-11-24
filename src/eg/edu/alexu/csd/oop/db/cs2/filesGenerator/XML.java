@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
+import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 import org.w3c.dom.Document;
@@ -30,7 +31,9 @@ public class XML {
             doc.appendChild(rootElement);
 
             //append first child element to root element
-            rootElement.appendChild(getColoumns(doc,table));
+            for (int i = 1 ; i< table.getSize() ; i++){
+                rootElement.appendChild(getColoumns(doc,table.getColumns().get(i)));
+            }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -50,18 +53,16 @@ public class XML {
             e.printStackTrace();
         }
     }
-    private static Node getColoumns(Document doc, Table table ) {
+    private static Node getColoumns(Document doc , Column column) {
         Element colomn = doc.createElement("Coloumn");
 
-        for (int i= 0 ; i<table.getSize() ; i++) {
-            colomn.setAttribute("name", table.getColumns().get(i).getName());
-            for (int j = 0 ; j<table.getColumns().get(i).getSize() ; j++) {
-                colomn.appendChild(getTableElements(doc, colomn, "record"+j,table.getColumns().get(i).getRecordAtIndex(j)));
+            colomn.setAttribute("name", column.getName());
+            for (int j = 0 ; j<column.getSize() ; j++) {
+                colomn.appendChild(getTableElements(doc, colomn, "record"+j,column.getRecordAtIndex(j).getValue()));
             }
-        }
         return colomn;
     }
-    private static Node getTableElements(Document doc, Element element, String name, Record value) {
+    private static Node getTableElements(Document doc, Element element, String name, Object value) {
         Element node = doc.createElement(name);
         node.appendChild(doc.createTextNode(String.valueOf(value)));
         return node;
