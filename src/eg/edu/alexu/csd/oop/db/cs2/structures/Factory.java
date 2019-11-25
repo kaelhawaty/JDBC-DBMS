@@ -1,7 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
 public class Factory {
-    static Factory instance = null;
+    static Factory instance;
     private Factory(){}
     public synchronized static Factory getInstance(){
         if(instance == null){
@@ -9,7 +9,8 @@ public class Factory {
         }
         return instance;
     }
-    public Object getObject(String type, String value){
+    public Object getObject( String value){
+        String type = getType(value);
         if(type.equals("int")){
             return Integer.parseInt(value);
         }
@@ -17,6 +18,15 @@ public class Factory {
             return value;
         }
         return null;
+    }
+    public String getType(String value){
+        if(value.matches("[0-9]+")){
+            return "int";
+        }
+        if(value.matches("\\'\\w+\\'")){
+            return "varchar";
+        }
+        throw new ClassCastException("Unsupported data-type");
     }
     public int compareObject(Object obj1, Object obj2 ){
         if(obj1 instanceof Integer && obj2 instanceof Integer){

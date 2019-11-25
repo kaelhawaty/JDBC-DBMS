@@ -24,7 +24,7 @@ public class Column{
     }
     public void addRecord(Record record) throws SQLException {
             if(!Factory.getInstance().checkInstance(type, record.getValue()))
-                throw new SQLException("Unable to add this record to with type" +  record.getType() + " to " +this.getName() + " with type = "+ this.getType());
+                throw new SQLException("Unable to add this record " + record + " to with type " +  record.getType() + " to " + this.getName() + " with type = "+ this.getType());
             records.add(record);
 
     }

@@ -33,11 +33,11 @@ public class DatabaseContainer {
         Table table = getTable(tableName);
         tables.remove(table);
     }
-    public void insertRow(String tableName, HashMap values) throws SQLException {
+    public void insertRow(String tableName, HashMap<String, Object> values) throws SQLException {
         Table table = getTable(tableName);
         table.addRow(values);
     }
-    public void insertRow(String tableName, String[] values) throws SQLException {
+    public void insertRow(String tableName, Object[] values) throws SQLException {
         Table table = getTable(tableName);
         table.addRow(values);
     }

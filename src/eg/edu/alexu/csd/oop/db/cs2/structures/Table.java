@@ -37,7 +37,7 @@ public class Table {
     public void addRow(HashMap<String, Object> values) throws SQLException {
         for (Column column : columns){
             if(values.containsKey(column.getName()) && !Factory.getInstance().checkInstance(column.getType(), values.get(column.getName()))) {
-                    throw new SQLException("Cannot add this Object " + values.get(column.getName()) + "to column " + column.getName());
+                    throw new SQLException("Cannot add this Object " + values.get(column.getName()) + " to column " + column.getName());
             }
         }
         for (Column column : columns){
@@ -66,7 +66,7 @@ public class Table {
     public void addRow(List<Record> records) throws SQLException {
         int i = 0;
         for (Column column : columns)
-            column.addRecord(new Record(records.get(i++), column.getType()));
+            column.addRecord(new Record(records.get(i++).getValue(), column.getType()));
         this.IDCounter++;
     }
     public boolean containColumn(String columnName){
@@ -115,7 +115,7 @@ public class Table {
         }
     }
     public void updateTable(Object[] info) throws SQLException {
-        for(int i = 2; i < info.length; i+=2){
+        for(int i = 0; i < info.length; i+=2){
             getColumn((String)info[i]).updateAllRecords(info[i+1]);
         }
     }
@@ -127,8 +127,8 @@ public class Table {
     private void updateRow(int index, List<Record> values) throws SQLException {
         int i = 0;
         for (Column column : columns){
-            if(!Factory.getInstance().checkInstance(column.getType(), values.get(i++))){
-                throw new SQLException("Cannot add this Object " + values.get(i-1) + "to column " + column.getName());
+            if(!Factory.getInstance().checkInstance(column.getType(), values.get(i++).getValue())){
+                throw new SQLException("Cannot add this Object " + values.get(i-1) + " to column " + column.getName());
             }
         }
         i = 0;

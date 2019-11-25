@@ -122,7 +122,6 @@ public class SaintyTest {
             TestRunner.fail("Failed to update table with mixing capital and small letters!", e);
         }
     }
-
     @Test
     public void testScenario_1()
     {

@@ -15,7 +15,7 @@ public class Record {
     }
     public void setValue(Object v) throws SQLException {
         if(!Factory.getInstance().checkInstance(type, v)){
-            throw new SQLException("Cannot store this value in record of type " + type);
+            throw new SQLException("Cannot store this " +  v  + " in this record " + this + " of type " + type);
         }
         this.value = v;
     }
