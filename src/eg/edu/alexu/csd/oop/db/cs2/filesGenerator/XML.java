@@ -18,14 +18,16 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class XML {
     FilesHandler filesHandler = new FilesHandler();
     DatabaseManager databaseManager = new DatabaseManager();
 
-    public void saveTable(Table table) {
+    public void saveTable(Table table) throws IOException {
         DocumentBuilderFactory DOM = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -55,9 +57,28 @@ public class XML {
 
             transformer.transform(source, file);
 
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filesHandler.getPathOf(table.getName())+".dtd"));
+            String fileStream = "" ;
+            for (int i= 1 ; i <table.getSize(); i++){
+                if ( i==table.getSize()-1){
+                    fileStream += table.getColumns().get(i).getName();
+                }else{
+                    fileStream += table.getColumns().get(i).getName() + ",";
+                }
+            }
+            writer.write("<!ELEMENT "+table.getName()+" ("+fileStream+")>");
+            writer.newLine();
+            for (int j = 1 ; j<table.getSize() ; j++){
+                writer.write("<!ELEMENT "+table.getColumns().get(j).getName()+" (#PCDATA)>");
+                writer.newLine();
+            }
+            writer.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     private static Node getColoumns(Document doc, Column column) {

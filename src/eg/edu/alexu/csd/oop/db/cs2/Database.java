@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public interface Database {
@@ -40,7 +41,7 @@ public interface Database {
      * @throws SQLException
      *             syntax error
      */
-    public Object[][] executeQuery(String query) throws java.sql.SQLException;
+    public Object[][] executeQuery(String query) throws java.sql.SQLException, IOException;
 
     /**
      * Insert or update or delete the data

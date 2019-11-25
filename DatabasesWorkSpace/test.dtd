@@ -1,0 +1,4 @@
+<!ELEMENT test (name,age,size)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT age (#PCDATA)>
+<!ELEMENT size (#PCDATA)>

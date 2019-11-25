@@ -7,6 +7,7 @@ import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
 import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.XML;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class DatabaseManager implements Database {
         }
     }
     @Override
-    public Object[][] executeQuery(String query) throws SQLException {
+    public Object[][] executeQuery(String query) throws SQLException, IOException {
         Object[][] objects;
         query = query.toLowerCase();
         if (!QueriesParser.checkExecuteQuery(query))

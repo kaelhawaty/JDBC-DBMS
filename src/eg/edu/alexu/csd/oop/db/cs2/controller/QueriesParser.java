@@ -3,6 +3,7 @@ package eg.edu.alexu.csd.oop.db.cs2.controller;
 
 import eg.edu.alexu.csd.oop.db.cs2.Database;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class QueriesParser {
@@ -26,6 +27,8 @@ public class QueriesParser {
                 System.out.println("Syntax Error");
             }
         }catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
