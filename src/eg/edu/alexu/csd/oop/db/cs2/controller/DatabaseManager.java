@@ -8,6 +8,7 @@ import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.*;
@@ -281,5 +282,20 @@ public class DatabaseManager implements Database {
             j++;
         }
         return objects;
+    }
+    public Object[][] sortTable(Object[][] table, List<Integer> idx){
+        Arrays.sort(table, (Object[] a, Object[] b) -> {
+            int i = 0;
+            int cmp = 0;
+            while(i < idx.size()){
+                cmp = Factory.getInstance().compareObject(a[Math.abs(idx.get(i))], b[Math.abs(idx.get(i))]);
+                if(cmp != 0){
+                    return (idx.get(i)/Math.abs(idx.get(i))) * cmp;
+                }
+                i++;
+            }
+            return cmp;
+        });
+        return table;
     }
 }
