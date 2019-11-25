@@ -4,6 +4,7 @@ import eg.edu.alexu.csd.oop.db.cs2.ConditionsFilter;
 import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.FilesHandler;
 import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
+import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.XML;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class DatabaseManager implements Database {
     private ConditionsFilter less = new LessThan();
     private Switch aSwitch = new Switch();
     private boolean flag;
-    private DatabaseManager(){
+    public DatabaseManager(){
         aSwitch.register("=", equal);
         aSwitch.register("<", less);
         aSwitch.register(">", greater);
@@ -149,6 +150,8 @@ public class DatabaseManager implements Database {
                 objects = selectTable(table.getColumns(columns), false);
             }
         }
+        XML xml = new XML();
+        xml.saveTable(currentDatabase.getTable("test"));
         return objects;
     }
 
