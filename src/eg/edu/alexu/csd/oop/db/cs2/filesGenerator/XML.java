@@ -110,14 +110,18 @@ public class XML {
             Document doc = dBuilder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName(table.getName());
-            for (int i = 0 ; i < 100 ; i++) {
+            for (int i = 0 ; i < nodeList.getLength() ; i++) {
                 if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) nodeList.item(i);
                     table.addColumn(getTagValue("Coloumn name", element), getTagValue("Coloumn_Type", element));
-                    if (table.getColumns().get(i).getType().equalsIgnoreCase("int"))
-                        table.getColumns().get(i).addRecord(new Record<>(Integer.parseInt((String) getTagValue("Coloumn_Type", element))));
-                    else
-                        table.getColumns().get(i).addRecord(new Record<>(getTagValue("Coloumn_Type", element)));
+                    NodeList nodeList1 = doc.getElementsByTagName(table.getColumns().get(i).getName());
+                    for (int j = 0 ; j < nodeList1.getLength(); j++){
+                        if (table.getColumns().get(i).getType().equalsIgnoreCase("int"))
+                            table.getColumns().get(i).addRecord(new Record<>(Integer.parseInt((String) getTagValue("Coloumn_Type", element))));
+                        else
+                            table.getColumns().get(i).addRecord(new Record<>(getTagValue("Coloumn_Type", element)));
+                    }
+
                 }
             }
 
