@@ -1,17 +1,28 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
-public class Record <T>{
-    private T value;
-    public Record(T v){
+import java.sql.SQLException;
+
+public class Record {
+    private Object value;
+    private String type;
+    public Record(Object v, String type){
         this.value = v;
+        this.type = type;
     }
     public Record(Record record){
-        this.value = (T) record.getValue();
+        this.value = record.getValue();
+        this.type = record.getType();
     }
-    public void setValue(T v){
+    public void setValue(Object v) throws SQLException {
+        if(!Factory.getInstance().checkInstance(type, v)){
+            throw new SQLException("Cannot store this value in record of type " + type);
+        }
         this.value = v;
     }
-    public T getValue() {
+    public String getType(){
+        return type;
+    }
+    public Object getValue() {
         return value;
     }
 }

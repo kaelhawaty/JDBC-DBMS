@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +33,11 @@ public class DatabaseContainer {
         Table table = getTable(tableName);
         tables.remove(table);
     }
-    public void insertRow(String tableName, HashMap values){
+    public void insertRow(String tableName, HashMap values) throws SQLException {
         Table table = getTable(tableName);
         table.addRow(values);
     }
-    public void insertRow(String tableName, String[] values){
+    public void insertRow(String tableName, String[] values) throws SQLException {
         Table table = getTable(tableName);
         table.addRow(values);
     }

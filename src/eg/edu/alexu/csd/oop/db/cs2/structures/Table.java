@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +34,18 @@ public class Table {
     public void addColumn(String name, String type){
         columns.add(new Column(name, type));
     }
-    public void addRow(HashMap values){
+    public void addRow(HashMap<String, Object> values) throws SQLException {
         for (Column column : columns){
-            if(values.containsKey(column.getName()))
-                column.addRecord(new Record(values.get(column.getName())));
-            else
+            if(values.containsKey(column.getName()) && !Factory.getInstance().checkInstance(column.getType(), values.get(column.getName()))) {
+                    throw new SQLException("Cannot add this Object " + values.get(column.getName()) + "to column " + column.getName());
+            }
+        }
+        for (Column column : columns){
+            if(values.containsKey(column.getName())) {
+                column.addRecord(new Record(values.get(column.getName()), column.getType()));
+            }else {
                 column.addRecord(null);
+            }
         }
         this.IDCounter++;
     }
@@ -49,17 +56,17 @@ public class Table {
         }
         return record;
     }
-    public void addRow(String[] values){
-        int i = 2;
-        columns.get(0).addRecord(new Record<>(IDCounter));
+    public void addRow(Object[] values) throws SQLException {
+        int i = 0;
+        columns.get(0).addRecord(new Record(IDCounter, "int"));
         for (int j = 1; j < columns.size(); ++j)
-            columns.get(j).addRecord(new Record(values[i++]));
+            columns.get(j).addRecord(new Record(values[i++], columns.get(j).getType()));
         this.IDCounter++;
     }
-    public void addRow(List<Record> records){
+    public void addRow(List<Record> records) throws SQLException {
         int i = 0;
         for (Column column : columns)
-            column.addRecord(new Record(records.get(i++)));
+            column.addRecord(new Record(records.get(i++), column.getType()));
         this.IDCounter++;
     }
     public boolean containColumn(String columnName){
@@ -107,18 +114,24 @@ public class Table {
             column.deleteRecord(index);
         }
     }
-    public void updateTable(String[] info){
+    public void updateTable(Object[] info) throws SQLException {
         for(int i = 2; i < info.length; i+=2){
-            getColumn(info[i]).updateAllRecords(info[i+1]);
+            getColumn((String)info[i]).updateAllRecords(info[i+1]);
         }
     }
-    public void updateTable(Table toUpdate){
+    public void updateTable(Table toUpdate) throws SQLException {
         List<Column> toUpdateColumns = toUpdate.getColumns();
         for(int i = 0; i < toUpdateColumns.get(0).getSize(); ++i)
-            this.updateRow(columns.get(0).getIndexOfID((Record)toUpdateColumns.get(0).getRecords().get(i)), toUpdate.getRow(i));
+            this.updateRow(columns.get(0).getIndexOfID(toUpdateColumns.get(0).getRecords().get(i)), toUpdate.getRow(i));
     }
-    private void updateRow(int index, List<Record> values){
+    private void updateRow(int index, List<Record> values) throws SQLException {
         int i = 0;
+        for (Column column : columns){
+            if(!Factory.getInstance().checkInstance(column.getType(), values.get(i++))){
+                throw new SQLException("Cannot add this Object " + values.get(i-1) + "to column " + column.getName());
+            }
+        }
+        i = 0;
         for (Column column : columns){
             column.updateRecord(index, values.get(i++));
         }

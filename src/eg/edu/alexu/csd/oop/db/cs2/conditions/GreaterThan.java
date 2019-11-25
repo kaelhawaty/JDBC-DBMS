@@ -3,12 +3,13 @@ package eg.edu.alexu.csd.oop.db.cs2.conditions;
 import eg.edu.alexu.csd.oop.db.cs2.ConditionsFilter;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class GreaterThan implements ConditionsFilter {
 
     @Override
-    public Table meetCondition(Table table, String columnName, String value) {
+    public Table meetCondition(Table table, String columnName, Object value) throws SQLException {
         List<Column> columns = table.getColumns();
         Table meetTable = new Table(table);
         for (Column column : columns){
@@ -17,18 +18,9 @@ public class GreaterThan implements ConditionsFilter {
             if (!column.getName().equals(columnName))
                 continue;
             for (Record record : records){
-                if(column.getType().equalsIgnoreCase("int")) {
-                    int x = Integer.parseInt(value);
-                    int y =  Integer.parseInt((String) record.getValue());
-                    if (record != null && y > x) {
-                        List<Record> rowInfo = table.getRow(i);
-                        meetTable.addRow(rowInfo);
-                    }
-                }else{
-                    if (record != null && value.compareTo((String) record.getValue()) < 0) {
-                        List<Record> rowInfo = table.getRow(i);
-                        meetTable.addRow(rowInfo);
-                    }
+                if(Factory.getInstance().compareObject(record.getValue(), value) > 0){
+                    List<Record> rowInfo = table.getRow(i);
+                    meetTable.addRow(rowInfo);
                 }
                 i++;
             }
