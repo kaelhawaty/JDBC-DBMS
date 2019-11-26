@@ -6,6 +6,7 @@ import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +99,14 @@ public class DatabaseManager implements Database {
         query = query.toLowerCase();
         if (!QueriesParser.checkExecuteQuery(query))
             throw new SQLException("Synatx Error");
+        Pattern p = Pattern.compile("\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?");
+        Matcher m = p.matcher(query);
+        String order = null;
+        String tableName;
+        if(m.find()){
+            order = m.group();
+            query = query.replaceAll("\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?", "");
+        }
         if (query.matches("^\\s*select\\s*\\*\\s*from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|(\\'\\w+\\')))?\\s*;?\\s*$")){
             query = query.replaceAll("^\\s*select\\s*\\*\\s*from\\s+", "").replaceAll("\\s*;?\\s*$", "");
             if(query.matches("^\\w+\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\')$")){
@@ -108,11 +117,13 @@ public class DatabaseManager implements Database {
                     throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], Factory.getInstance().getObject(split[4]));
                 objects = selectTable(table.getColumns(), true);
+                tableName = split[0];
             }else {
                 Table table = currentDatabase.getTable(query);
                 if(!filesHandler.isTableExist(table.getName(), currentDatabase.getName()))
                     throw new SQLException("Table " + table.getName() + " doesn't exist in database" + currentDatabase.getName());
                 objects = selectTable(table.getColumns(), true);
+                tableName = table.getName();
             }
         }else{
             query = query.replaceAll("^\\s*select\\s+", "").replaceAll("\\s*;?\\s*$","");
@@ -130,6 +141,7 @@ public class DatabaseManager implements Database {
                         throw new SQLException("Column " + columnName + "doesn't exist in table" + table.getName());
                 }
                 objects = selectTable(table.getColumns(columns), false);
+                tableName = table.getName();
             }else{
                 String[] split = parseQuery(query);
                 if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
@@ -140,7 +152,11 @@ public class DatabaseManager implements Database {
                 }
                 Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], Factory.getInstance().getObject(split[4]));
                 objects = selectTable(table.getColumns(columns), false);
+                tableName = table.getName();
             }
+        }
+        if(order != null){
+            objects = sortTable(objects, order, tableName);
         }
         return objects;
     }
@@ -292,12 +308,34 @@ public class DatabaseManager implements Database {
         }
         return objects;
     }
-    public Object[][] sortTable(Object[][] table, List<Integer> idx){
+    public Object[][] sortTable(Object[][] table, String input, String tableName) throws SQLException {
+        List<Integer> idx = new ArrayList<>();
+        input = input.replaceAll("\\s+order\\s+by\\s+", "").replaceAll(",", " ");
+        String[] split = input.split("\\s+");
+        List<Column> temp = currentDatabase.getTable(tableName).getColumns();
+        for(int i = 0; i < split.length; i++){
+            if(split[i].equals("desc")){
+                idx.set(idx.size()-1 ,idx.get(idx.size()-1) *-1);
+                continue;
+            }else if(split[i].equals("asc")){
+               continue;
+            }
+            int j;
+            for(j = 1; j < temp.size(); j++){
+                if(temp.get(j).getName().equals(split[i])){
+                    break;
+                }
+            }
+            if(j ==  temp.size()){
+                throw new SQLException("While sorting: A column was not found!");
+            }
+            idx.add(j);
+        }
         Arrays.sort(table, (Object[] a, Object[] b) -> {
             int i = 0;
             int cmp = 0;
             while(i < idx.size()){
-                cmp = Factory.getInstance().compareObject(a[Math.abs(idx.get(i))], b[Math.abs(idx.get(i))]);
+                cmp = Factory.getInstance().compareObject(a[Math.abs(idx.get(i))-1], b[Math.abs(idx.get(i))-1]);
                 if(cmp != 0){
                     return (idx.get(i)/Math.abs(idx.get(i))) * cmp;
                 }
