@@ -24,7 +24,7 @@ public class DatabaseManager implements Database {
     private ConditionsFilter less = new LessThan();
     private Switch aSwitch = new Switch();
     private boolean flag;
-    public DatabaseManager(){
+    private DatabaseManager(){
         aSwitch.register("=", equal);
         aSwitch.register("<", less);
         aSwitch.register(">", greater);

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Table name="test">
+    <Table_Size>4</Table_Size>
     <Coloumn name="name">
+        <Coloumn_Size>3</Coloumn_Size>
         <Coloumn_Type>varchar</Coloumn_Type>
         <record0>'AboBakr'</record0>
         <record1>'AboBakr'</record1>
         <record2>'AboBakr'</record2>
     </Coloumn>
     <Coloumn name="age">
+        <Coloumn_Size>3</Coloumn_Size>
         <Coloumn_Type>varchar</Coloumn_Type>
         <record0>'20'</record0>
         <record1>'20'</record1>
         <record2>'20'</record2>
     </Coloumn>
     <Coloumn name="size">
+        <Coloumn_Size>3</Coloumn_Size>
         <Coloumn_Type>varchar</Coloumn_Type>
         <record0>'170'</record0>
         <record1>'170'</record1>

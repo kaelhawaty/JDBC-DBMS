@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
+import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
@@ -25,7 +26,7 @@ import java.io.IOException;
 
 public class XML {
     FilesHandler filesHandler = new FilesHandler();
-    DatabaseManager databaseManager = new DatabaseManager();
+    DatabaseManager databaseManager =  DatabaseManager.getInstance();
 
     public void saveTable(Table table) throws IOException {
         DocumentBuilderFactory DOM = DocumentBuilderFactory.newInstance();
@@ -37,13 +38,14 @@ public class XML {
             Element rootElement =
                     doc.createElement("Table");
             rootElement.setAttribute("name", table.getName());
+            rootElement.appendChild(getTableElements(doc, "Table_Size", table.getSize()));
             //append root element to document
             doc.appendChild(rootElement);
 
             //append child elements to root element
             for (int i = 1; i < table.getSize(); i++) {
-
                 rootElement.appendChild(getColoumns(doc, table.getColumns().get(i)));
+
             }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -85,15 +87,16 @@ public class XML {
         Element colomn = doc.createElement("Coloumn");
 
         colomn.setAttribute("name", column.getName());
-        colomn.appendChild(getTableElements(doc, colomn, "Coloumn_Type", column.getType()));
+        colomn.appendChild(getTableElements(doc, "Coloumn_Size", column.getSize()));
+        colomn.appendChild(getTableElements(doc, "Coloumn_Type", column.getType()));
         for (int j = 0; j < column.getSize(); j++) {
 
-            colomn.appendChild(getTableElements(doc, colomn, "record" + j, column.getRecordAtIndex(j).getValue()));
+            colomn.appendChild(getTableElements(doc, "record" + j, column.getRecordAtIndex(j).getValue()));
         }
         return colomn;
     }
 
-    private static Node getTableElements(Document doc, Element element, String name, Object value) {
+    private static Node getTableElements(Document doc, String name, Object value) {
         Element node = doc.createElement(name);
         node.appendChild(doc.createTextNode(String.valueOf(value)));
         return node;
@@ -110,21 +113,18 @@ public class XML {
             Document doc = dBuilder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName(table.getName());
-            for (int i = 0 ; i < nodeList.getLength() ; i++) {
+            for (int i = 0 ; i < Integer.parseInt(getTagValue("Table_Size",(Element) nodeList.item(0))) ; i++) {
                 if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) nodeList.item(i);
                     table.addColumn(getTagValue("Coloumn name", element), getTagValue("Coloumn_Type", element));
-                    NodeList nodeList1 = doc.getElementsByTagName(table.getColumns().get(i).getName());
-                    for (int j = 0 ; j < nodeList1.getLength(); j++){
+                    for (int j = 0 ; j < Integer.parseInt(getTagValue("Coloumn_Size",(Element) nodeList.item(2))) ; j++){
                         if (table.getColumns().get(i).getType().equalsIgnoreCase("int"))
                             table.getColumns().get(i).addRecord(new Record<>(Integer.parseInt((String) getTagValue("Coloumn_Type", element))));
                         else
                             table.getColumns().get(i).addRecord(new Record<>(getTagValue("Coloumn_Type", element)));
                     }
-
                 }
             }
-
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
