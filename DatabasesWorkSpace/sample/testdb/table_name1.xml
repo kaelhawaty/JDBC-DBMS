@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Table name="table_name1">
+    <Column name="ID" type="int">
+        <record0>1</record0>
+        <record1>2</record1>
+    </Column>
+    <Column name="column_name1" type="varchar">
+        <record0>'11111111'</record0>
+        <record1>'value2'</record1>
+    </Column>
+    <Column name="column_name2" type="int">
+        <record0>10</record0>
+        <record1>6</record1>
+    </Column>
+    <Column name="column_name3" type="varchar">
+        <record0>'333333333'</record0>
+        <record1>'value4'</record1>
+    </Column>
+</Table>

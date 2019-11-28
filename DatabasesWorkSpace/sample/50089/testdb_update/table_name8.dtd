@@ -1,0 +1,5 @@
+<!ELEMENT table_name8 (ID,column_name1,column_name2,column_name3)>
+<!ELEMENT ID (#PCDATA)>
+<!ELEMENT column_name1 (#PCDATA)>
+<!ELEMENT column_name2 (#PCDATA)>
+<!ELEMENT column_name3 (#PCDATA)>

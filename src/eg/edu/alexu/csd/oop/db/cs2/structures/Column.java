@@ -1,12 +1,13 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Column <T>{
+public class Column{
     private String type;
     private String name;
-    private List<Record<T>> records;
+    private List<Record> records;
     public Column(String n, String t){
         this.name = n;
         this.type = t;
@@ -18,11 +19,14 @@ public class Column <T>{
     public String getName(){
         return name;
     }
-    public List<Record<T>> getRecords(){
+    public List<Record> getRecords(){
         return records;
     }
-    public void addRecord(Record record){
-        records.add(record);
+    public void addRecord(Record record) throws SQLException {
+            if(!Factory.getInstance().checkInstance(type, record.getValue()))
+                throw new SQLException("Unable to add this record " + record + " to with type " +  record.getType() + " to " + this.getName() + " with type = "+ this.getType());
+            records.add(record);
+
     }
     public int getSize(){
         return records.size();
@@ -36,19 +40,19 @@ public class Column <T>{
     public int getIndexOfID(Record rec){
         int i = 0;
         for (Record record : records){
-            if (rec.getValue() == record.getValue()){
+            if (rec.getValue().equals(record.getValue())){
                 return i;
             }
             i++;
         }
         return -1;
     }
-    public void updateAllRecords(T value){
-        for (Record record : records){
-            record.setValue(value);
-        }
+    public void updateAllRecords(Object value) throws SQLException {
+            for (Record record : records){
+                record.setValue(value);
+            }
     }
-    public void updateRecord(int index, Record newRecord){
-        this.records.get(index).setValue((T)newRecord.getValue());
+    public void updateRecord(int index, Record newRecord) throws SQLException {
+        this.records.get(index).setValue(newRecord.getValue());
     }
 }

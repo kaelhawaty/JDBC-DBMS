@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Table name="hazoma">
+    <Column name="ID" type="int">
+        <record0>0</record0>
+        <record1>1</record1>
+        <record2>2</record2>
+        <record3>3</record3>
+        <record4>4</record4>
+    </Column>
+    <Column name="name" type="varchar">
+        <record0>'Hazem'</record0>
+        <record1>'Kareem'</record1>
+        <record2>'Hazema'</record2>
+        <record3>'Krombo'</record3>
+        <record4>'Hazzzem'</record4>
+    </Column>
+    <Column name="age" type="int">
+        <record0>20</record0>
+        <record1>22</record1>
+        <record2>22</record2>
+        <record3>19</record3>
+        <record4>10</record4>
+    </Column>
+    <Column name="year" type="int">
+        <record0>1999</record0>
+        <record1>1559</record1>
+        <record2>1899</record2>
+        <record3>1998</record3>
+        <record4>2019</record4>
+    </Column>
+</Table>

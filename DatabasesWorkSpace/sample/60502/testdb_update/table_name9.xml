@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Table name="table_name9">
+    <Column name="ID" type="int"/>
+    <Column name="column_name1" type="varchar"/>
+    <Column name="column_name2" type="int"/>
+    <Column name="column_name3" type="varchar"/>
+</Table>
