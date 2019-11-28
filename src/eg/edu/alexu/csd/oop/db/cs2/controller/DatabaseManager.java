@@ -96,7 +96,7 @@ public class DatabaseManager implements Database {
     @Override
     public Object[][] executeQuery(String query) throws SQLException {
         if(currentDatabase == null){
-            return null;
+            throw new SQLException("There is no current active Database!");
         }
         Object[][] objects;
         query = query.toLowerCase();

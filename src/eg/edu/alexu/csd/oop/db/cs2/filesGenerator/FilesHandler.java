@@ -3,9 +3,12 @@ package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 import eg.edu.alexu.csd.oop.db.cs2.Parser;
 import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class FilesHandler {
     private File mainPath;
@@ -45,14 +48,16 @@ public class FilesHandler {
     public void dropDatabase(String name){
         deleteDirectory(new File(mainPath+fileSeparator+name));
     }
-    public boolean isTableExist(String tableName, String databaseName){
+    public boolean isTableExist(String tableName, String databaseName) throws SQLException {
         if (tableName == null || databaseName == null)
             return false;
         File xmlFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
         File dtdFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
         if(xmlFile.exists() && dtdFile.exists()){
-            if(DatabaseManager.getInstance().getCurrentDatabase().getTable(tableName) == null){
-                DatabaseManager.getInstance().getCurrentDatabase().addTable(xml.loadTable(tableName, databaseName, this));
+            if(DatabaseManager.getInstance().getCurrentDatabase().getTable(tableName) == null) {
+                Table table = xml.loadTable(tableName, databaseName, this);
+                if(table == null) throw new SQLException("Couldn't load table!");
+                DatabaseManager.getInstance().getCurrentDatabase().addTable(table);
             }
             return true;
         }
