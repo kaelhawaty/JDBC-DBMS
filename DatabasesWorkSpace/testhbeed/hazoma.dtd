@@ -1,5 +1,0 @@
-<!ELEMENT hazoma (ID,name,age,year)>
-<!ELEMENT ID (#PCDATA)>
-<!ELEMENT name (#PCDATA)>
-<!ELEMENT age (#PCDATA)>
-<!ELEMENT year (#PCDATA)>

@@ -7,7 +7,6 @@ import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
-import javafx.scene.control.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,18 +61,45 @@ public class XML implements Parser {
             transformer.transform(source, file);
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(filesHandler.getPathOfTable(table.getName(), dataBaseName)+".dtd"));
+            writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            writer.newLine();
+            writer.newLine();
+            writer.newLine();
+            writer.write("<!ELEMENT Table (Column)+>");
+            writer.newLine();
+            writer.write("<!ATTLIST Table");
+            writer.newLine();
+            writer.write("  xmlns CDATA #FIXED ''");
+            writer.newLine();
+            writer.write("  name NMTOKEN #REQUIRED>");
+            writer.newLine();
+            writer.newLine();
             String fileStream = "" ;
-            for (int i= 0 ; i <table.getSize(); i++){
-                if ( i==table.getSize()-1){
-                    fileStream += table.getColumns().get(i).getName();
+            for (int i= 0 ; i <table.getColumns().get(1).getSize(); i++){
+                if ( i==table.getColumns().get(1).getSize()-1){
+                    fileStream += "record"+i;
                 }else{
-                    fileStream += table.getColumns().get(i).getName() + ",";
+                    fileStream += "record"+i + ",";
                 }
             }
-            writer.write("<!ELEMENT "+table.getName()+" ("+fileStream+")>");
+            writer.write("<!ELEMENT Column"+" ("+fileStream+")>");
             writer.newLine();
-            for (int j = 0 ; j<table.getSize() ; j++){
-                writer.write("<!ELEMENT "+table.getColumns().get(j).getName()+" (#PCDATA)>");
+            writer.write("<!ATTLIST Column");
+            writer.newLine();
+            writer.write("  xmlns CDATA #FIXED ''");
+            writer.newLine();
+            writer.write("  name NMTOKEN #REQUIRED");
+            writer.newLine();
+            writer.write("  type NMTOKEN #REQUIRED>");
+            writer.newLine();
+            writer.newLine();
+            for (int j = 0 ; j<table.getColumns().get(1).getSize() ; j++){
+                writer.write("<!ELEMENT "+"record"+j+" (#PCDATA)>");
+                writer.newLine();
+                writer.write("<!ATTLIST record"+j);
+                writer.newLine();
+                writer.write("  xmlns CDATA #FIXED ''>");
+                writer.newLine();
                 writer.newLine();
             }
             writer.close();

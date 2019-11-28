@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Table name="test">
+    <Column name="ID" type="int">
+        <record0>0</record0>
+        <record1>1</record1>
+        <record2>2</record2>
+    </Column>
+    <Column name="name" type="varchar">
+        <record0>'AboBakr'</record0>
+        <record1>'AboBakr'</record1>
+        <record2>'AboBakr'</record2>
+    </Column>
+    <Column name="age" type="varchar">
+        <record0>'20'</record0>
+        <record1>'20'</record1>
+        <record2>'20'</record2>
+    </Column>
+    <Column name="size" type="varchar">
+        <record0>'170'</record0>
+        <record1>'170'</record1>
+        <record2>'170'</record2>
+    </Column>
+</Table>
