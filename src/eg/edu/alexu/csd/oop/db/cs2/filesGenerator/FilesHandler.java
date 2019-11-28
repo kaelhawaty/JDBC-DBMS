@@ -1,17 +1,25 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
+import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
+import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
+
 import java.io.File;
 import java.io.IOException;
 
 public class FilesHandler {
     private File mainPath;
     private String fileSeparator = System.getProperty("file.separator");
+    private XML xml;
     public FilesHandler(){
         mainPath = new File("DatabasesWorkSpace");
         mainPath.mkdirs();
+        xml = new XML();
     }
     public String getPathOf(String name){
         return mainPath.getAbsolutePath()+fileSeparator+name;
+    }
+    public String getPathOfTable(String tableName, String databaseName){
+        return mainPath.getAbsolutePath()+fileSeparator+databaseName+fileSeparator+tableName;
     }
     public boolean isDatabaseExist(String name){
         if (name == null)
@@ -36,22 +44,18 @@ public class FilesHandler {
     public void dropDatabase(String name){
         deleteDirectory(new File(mainPath+fileSeparator+name));
     }
-    public void createTable(String tableName, String databaseName){
-        File xml = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
-        File dtd = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
-        try {
-            xml.createNewFile();
-            dtd.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public boolean isTableExist(String tableName, String databaseName){
         if (tableName == null || databaseName == null)
             return false;
-        File xml = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
-        File dtd = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
-        return xml.exists() && dtd.exists();
+        File xmlFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
+        File dtdFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
+        if(xmlFile.exists() && dtdFile.exists()){
+            if(DatabaseManager.getInstance().getCurrentDatabase().getTable(tableName) == null){
+                DatabaseManager.getInstance().getCurrentDatabase().addTable(xml.loadTable(tableName, databaseName, this));
+            }
+            return true;
+        }
+        return false;
     }
     public void dropTable(String tableName, String databaseName){
         File xml = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
@@ -59,4 +63,8 @@ public class FilesHandler {
         xml.delete();
         dtd.delete();
     }
+    public void saveTable(Table table) throws IOException {
+        xml.saveTable(table, DatabaseManager.getInstance().getCurrentDatabase().getName(), this);
+    }
+
 }

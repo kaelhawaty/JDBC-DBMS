@@ -8,22 +8,20 @@ import java.util.List;
 
 public class Table {
     private String name;
-    private List<Column> columns;
-    private int IDCounter;
+    private List<Column> columns = new ArrayList<>();
+    private int IDCounter = 0;
+    public Table(){
+    }
     public Table(String name){
         this.name = name;
-        this.columns = new ArrayList<>();
         this.addColumn("ID", "int");
-        this.IDCounter = 0;
     }
     public Table(Table table){
         this.name = table.getName();
         List<Column> tableColumns = table.getColumns();
-        this.columns = new ArrayList<>();
         for(Column column : tableColumns){
             this.addColumn(column.getName(), column.getType());
         }
-        this.IDCounter = 0;
     }
     public int getIDCounter(){
         return IDCounter;
@@ -142,5 +140,8 @@ public class Table {
                 return column;
         }
         return null;
+    }
+    public void setName(String name){
+        this.name = name;
     }
 }

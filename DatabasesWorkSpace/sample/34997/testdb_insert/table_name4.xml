@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Table name="table_name2">
+<Table name="table_name4">
     <Column name="ID" type="int">
-        <record0>2</record0>
+        <record0>0</record0>
     </Column>
     <Column name="column_name1" type="varchar">
-        <record0>'value2'</record0>
+        <record0>'value1'</record0>
     </Column>
     <Column name="column_name2" type="int">
-        <record0>6</record0>
+        <record0>4</record0>
     </Column>
     <Column name="column_name3" type="varchar">
-        <record0>'value4'</record0>
+        <record0>'value3'</record0>
     </Column>
 </Table>

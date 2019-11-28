@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Table name="table_name2">
+<Table name="table_name11">
     <Column name="ID" type="int">
         <record0>2</record0>
     </Column>
@@ -7,7 +7,7 @@
         <record0>'value2'</record0>
     </Column>
     <Column name="column_name2" type="int">
-        <record0>6</record0>
+        <record0>5</record0>
     </Column>
     <Column name="column_name3" type="varchar">
         <record0>'value4'</record0>
