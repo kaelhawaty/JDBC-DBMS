@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
 import eg.edu.alexu.csd.oop.db.cs2.Database;
+import eg.edu.alexu.csd.oop.db.cs2.Parser;
 import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
@@ -28,7 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
 
-public class XML {
+public class XML implements Parser {
+    @Override
     public  void saveTable(Table table, String dataBaseName, FilesHandler filesHandler) throws IOException {
         DocumentBuilderFactory DOM = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
@@ -101,7 +103,7 @@ public class XML {
         return node;
     }
 
-
+    @Override
     public Table loadTable(String TableName, String dataBaseName, FilesHandler filesHandler) {
         File xmlFile = new File(filesHandler.getPathOfTable(TableName, dataBaseName) + ".xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

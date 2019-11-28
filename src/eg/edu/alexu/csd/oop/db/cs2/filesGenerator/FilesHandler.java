@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
+import eg.edu.alexu.csd.oop.db.cs2.Parser;
 import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 public class FilesHandler {
     private File mainPath;
     private String fileSeparator = System.getProperty("file.separator");
-    private XML xml;
+    private Parser xml;
     public FilesHandler(){
         mainPath = new File("DatabasesWorkSpace");
         mainPath.mkdirs();
