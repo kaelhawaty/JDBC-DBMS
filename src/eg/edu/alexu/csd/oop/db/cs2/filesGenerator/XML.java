@@ -7,7 +7,6 @@ import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
-import javafx.scene.control.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -28,10 +27,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.List;
 
 public class XML implements Parser {
     @Override
-    public  void saveTable(Table table, String dataBaseName, FilesHandler filesHandler) throws IOException {
+    public  void saveTable(Table table, String dataBaseName, FilesHandler filesHandler) {
         DocumentBuilderFactory DOM = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -58,24 +58,51 @@ public class XML implements Parser {
 
             //write to file
             StreamResult file = new StreamResult(new File(filesHandler.getPathOfTable(table.getName(), dataBaseName) + ".xml"));
-
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, table.getName() + ".dtd");
             transformer.transform(source, file);
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(filesHandler.getPathOfTable(table.getName(), dataBaseName)+".dtd"));
-            String fileStream = "" ;
-            for (int i= 0 ; i <table.getSize(); i++){
-                if ( i==table.getSize()-1){
-                    fileStream += table.getColumns().get(i).getName();
-                }else{
-                    fileStream += table.getColumns().get(i).getName() + ",";
+            StringBuilder sb = new StringBuilder();
+            List<Column> list = table.getColumns();
+            for(int i = 0; i < list.size(); i++){
+               sb.append(list.get(i).getName());
+               if(i != list.size()-1)
+                   sb.append(',');
+            }
+            writer.write("<!ELEMENT Table (" + sb.toString() +")>");
+            writer.newLine();
+            writer.write("<!ATTLIST Table");
+            writer.newLine();
+            writer.write("  xmlns CDATA #FIXED ''");
+            writer.newLine();
+            writer.write("  name NMTOKEN #REQUIRED>");
+            writer.newLine();
+            writer.newLine();
+            sb.setLength(0);
+            for (int i= 0 ; i <table.getColumns().get(0).getSize(); i++){
+                sb.append("Record");
+                if(table.getColumns().get(0).getSize()-1 != i){
+                    sb.append(",");
                 }
             }
-            writer.write("<!ELEMENT "+table.getName()+" ("+fileStream+")>");
-            writer.newLine();
-            for (int j = 0 ; j<table.getSize() ; j++){
-                writer.write("<!ELEMENT "+table.getColumns().get(j).getName()+" (#PCDATA)>");
+            for(int i = 0; i < list.size(); i++) {
+                writer.write("<!ELEMENT " + list.get(i).getName() + " (" + sb.toString() + ")>");
+                writer.newLine();
+                writer.write("<!ATTLIST "+ list.get(i).getName());
+                writer.newLine();
+                writer.write("  xmlns CDATA #FIXED ''");
+                writer.newLine();
+                writer.write("  type NMTOKEN #REQUIRED>");
+                writer.newLine();
                 writer.newLine();
             }
+            writer.write("<!ELEMENT Record (#PCDATA)>");
+            writer.newLine();
+            writer.write("<!ATTLIST Record");
+            writer.newLine();
+            writer.write("  xmlns CDATA #FIXED ''>");
+            writer.newLine();
+            writer.newLine();
             writer.close();
 
         } catch (Exception e) {
@@ -86,31 +113,24 @@ public class XML implements Parser {
     }
 
     private Node getColoumns(Document doc, Column column) {
-        Element colomn = doc.createElement("Column");
+        Element colomn = doc.createElement(column.getName());
 
-        colomn.setAttribute("name", column.getName());
         colomn.setAttribute("type", column.getType());
         for (int j = 0; j < column.getSize(); j++) {
-
-            colomn.appendChild(getTableElements(doc, "record" + j, column.getRecordAtIndex(j).getValue()));
+            Element node = doc.createElement("Record");
+            node.appendChild(doc.createTextNode(String.valueOf(column.getRecordAtIndex(j).getValue())));
+            colomn.appendChild(node);
         }
         return colomn;
     }
-
-    private Node getTableElements(Document doc, String name, Object value) {
-        Element node = doc.createElement(name);
-        node.appendChild(doc.createTextNode(String.valueOf(value)));
-        return node;
-    }
-
     @Override
     public Table loadTable(String TableName, String dataBaseName, FilesHandler filesHandler) {
-        File xmlFile = new File(filesHandler.getPathOfTable(TableName, dataBaseName) + ".xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder;
-        Table table = new Table();
+        Table table = null;
         try {
-            dBuilder = dbFactory.newDocumentBuilder();
+            File xmlFile = XMLValidator.validate(filesHandler.getPathOfTable(TableName, dataBaseName) + ".xml");
+            table = new Table();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             Element tableElement = doc.getDocumentElement();
@@ -122,7 +142,7 @@ public class XML implements Parser {
                     Element element = (Element) tableNodeList.item(i);
                     String colType = element.getAttribute("type");
                     NodeList list = element.getChildNodes();
-                    table.addColumn(element.getAttribute("name"),  colType);
+                    table.addColumn(element.getTagName(),  colType);
                     for (int j = 0 ; j < list.getLength() ; j++){
                         if (list.item(j).getNodeType() == Node.ELEMENT_NODE) {
                             Element elem = (Element) list.item(j);
@@ -132,13 +152,7 @@ public class XML implements Parser {
                     cnt++;
                 }
             }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        }catch (ParserConfigurationException | IOException | SAXException | SQLException e) {
             e.printStackTrace();
         }
         return table;
