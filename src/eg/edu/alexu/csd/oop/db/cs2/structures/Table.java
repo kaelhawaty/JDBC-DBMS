@@ -12,8 +12,8 @@ public class Table {
     private int IDCounter = 0;
     public Table(){
     }
-    public Table(String name){
-        this.name = name;
+    public Table(String tableName){
+        this.name = tableName;
         this.addColumn("ID", "int");
     }
     public Table(Table table){
@@ -21,6 +21,13 @@ public class Table {
         List<Column> tableColumns = table.getColumns();
         for(Column column : tableColumns){
             this.addColumn(column.getName(), column.getType());
+        }
+    }
+    public Table(String[] tableInfo){
+        this.name = tableInfo[0];
+        this.addColumn("ID", "int");
+        for(int i = 1; i < tableInfo.length; i+=2){
+            this.addColumn(tableInfo[i], tableInfo[i+1]);
         }
     }
     public int getIDCounter(){

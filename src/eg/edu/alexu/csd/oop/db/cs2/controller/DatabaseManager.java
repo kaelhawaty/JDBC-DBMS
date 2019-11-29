@@ -3,7 +3,6 @@ package eg.edu.alexu.csd.oop.db.cs2.controller;
 import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.FilesHandler;
 import eg.edu.alexu.csd.oop.db.cs2.conditions.*;
-import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.XML;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.io.IOException;
@@ -16,7 +15,8 @@ import java.util.regex.*;
 
 public class DatabaseManager implements Database {
     private static DatabaseManager instance;
-    private DatabaseContainer currentDatabase;
+    private String currentDatabase;
+    private Table currentTable;
     private FilesHandler filesHandler;
     private Switch aSwitch;
     private boolean flag;
@@ -61,7 +61,7 @@ public class DatabaseManager implements Database {
             Matcher match = regex.matcher(query);
             match.find();
             String databaseName = match.group().toLowerCase().replaceAll("\\s+", "").replaceAll(";", "");
-            currentDatabase = new DatabaseContainer(databaseName);
+            currentDatabase = databaseName;
             filesHandler.createDatabase(databaseName);
             return true;
         }else if(QueriesParser.checkDropDatabase(query)){
@@ -75,22 +75,22 @@ public class DatabaseManager implements Database {
         } else if (QueriesParser.checkCreateTable(query)) {
             query = query.replaceAll("^\\s*create\\s+table\\s+", "").replaceAll("[\\(\\),;]", " ");
             String[] tableInfo = query.split("\\s+");
-            if (filesHandler.isTableExist(tableInfo[0], currentDatabase.getName()))
+            if (filesHandler.isTableExist(tableInfo[0], currentDatabase))
                 return false;
-            currentDatabase.addTable(tableInfo);
-            filesHandler.saveTable(currentDatabase.getTable(tableInfo[0]));
+            currentTable = new Table(tableInfo);
+            filesHandler.saveTable(currentTable);
             flag = true;
-
             return true;
         }else if (QueriesParser.checkDropTable(query)){
             query = query.replaceAll("^\\s*drop\\s+table\\s+", "").replaceAll("\\s*;?\\s*$", "");
-            if(!filesHandler.isTableExist(query, currentDatabase.getName()))
+            if(!filesHandler.isTableExist(query, currentDatabase))
                 return false;
-            filesHandler.dropTable(query, currentDatabase.getName());
-            currentDatabase.removeTable(query);
+            filesHandler.dropTable(query, currentDatabase);
+            if (currentTable.getName().equals(query))
+                currentTable = null;
             return true;
         }else{
-            throw new SQLException("Synatx Error");
+            throw new SQLException("Syntax Error");
         }
     }
     @Override
@@ -114,17 +114,17 @@ public class DatabaseManager implements Database {
             query = query.replaceAll("^\\s*select\\s*\\*\\s*from\\s+", "").replaceAll("\\s*;?\\s*$", "");
             if(query.matches("^\\w+\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\')$")){
                 String[] split = parseQuery(query);
-                if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase.getName());
-                if (!currentDatabase.getTable(split[0]).containColumn(split[2]))
+                if(!filesHandler.isTableExist(split[0], currentDatabase))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
+                if (!filesHandler.getTable(split[0], currentDatabase).containColumn(split[2]))
                     throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
-                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], Factory.getInstance().getObject(split[4]));
+                Table table = aSwitch.meetCondition(split[3], filesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
                 objects = selectTable(table.getColumns(), true);
                 tableName = split[0];
             }else {
-                if(!filesHandler.isTableExist(query, currentDatabase.getName()))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase.getName());
-                Table table = currentDatabase.getTable(query);
+                if(!filesHandler.isTableExist(query, currentDatabase))
+                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
+                Table table = filesHandler.getTable(query, currentDatabase);
                 objects = selectTable(table.getColumns(), true);
                 tableName = table.getName();
             }
@@ -136,9 +136,9 @@ public class DatabaseManager implements Database {
             String[] columns = match.group().replaceAll(",", " ").split("\\s+");
             query = query.replaceAll("^(\\w+\\s*,\\s*)*\\w+\\s+from\\s+", "");
             if (query.matches("\\w+")){
-                if(!filesHandler.isTableExist(query, currentDatabase.getName()))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase.getName());
-                Table table = currentDatabase.getTable(query);
+                if(!filesHandler.isTableExist(query, currentDatabase))
+                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
+                Table table = filesHandler.getTable(query, currentDatabase);
                 for (String columnName : columns){
                     if(!table.containColumn(columnName))
                         throw new SQLException("Column " + columnName + "doesn't exist in table" + table.getName());
@@ -147,13 +147,13 @@ public class DatabaseManager implements Database {
                 tableName = table.getName();
             }else{
                 String[] split = parseQuery(query);
-                if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase.getName());
+                if(!filesHandler.isTableExist(split[0], currentDatabase))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
                 for (String columnName : columns){
-                    if(!currentDatabase.getTable(split[0]).containColumn(columnName))
+                    if(!filesHandler.getTable(split[0], currentDatabase).containColumn(columnName))
                         throw new SQLException("Column " + columnName + "doesn't exist in table" + split[0]);
                 }
-                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], Factory.getInstance().getObject(split[4]));
+                Table table = aSwitch.meetCondition(split[3], filesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
                 objects = selectTable(table.getColumns(columns), false);
                 tableName = table.getName();
             }
@@ -174,20 +174,20 @@ public class DatabaseManager implements Database {
                 query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "");
                 query = query.replaceAll("[\\(\\),]", " ");
                 String [] split = query.split("\\s+");
-                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName())))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase.getName());
+                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase)))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
                 if(split.length%2 == 0 && split[split.length/2].equalsIgnoreCase("values")){
-                    hashMap.put("ID" ,currentDatabase.getTable(split[0].toLowerCase()).getIDCounter());
+                    hashMap.put("ID" ,filesHandler.getTable(split[0].toLowerCase(), currentDatabase).getIDCounter());
                    for(int i = 1; i < split.length/2; ++i){
-                       if(currentDatabase.containColumn(split[0].toLowerCase(), split[i].toLowerCase())) {
+                       if(filesHandler.getTable(split[0].toLowerCase(), currentDatabase).containColumn(split[i].toLowerCase())) {
                            hashMap.put(split[i].toLowerCase(), Factory.getInstance().getObject(split[i + split.length / 2]));
                        }else
                            throw new SQLException("Column " + split[i] + "doesn't exist in table" + split[0]);
                    }
                 }else
                     throw new SQLException("Syntax Error");
-                currentDatabase.insertRow(split[0].toLowerCase(), hashMap);
-                filesHandler.saveTable(currentDatabase.getTable(split[0].toLowerCase()));
+                filesHandler.getTable(split[0].toLowerCase(), currentDatabase).addRow(hashMap);
+                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
             }else{
                 query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "").replaceAll("(?i)(values)", "");
                 query = query.replaceAll("[(\\),]", " ");
@@ -196,12 +196,12 @@ public class DatabaseManager implements Database {
                 for(int i = 1; i < split.length; i++){
                     values[i-1] = Factory.getInstance().getObject(split[i]);
                 }
-                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName())))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database " + currentDatabase.getName());
-                if (split.length != currentDatabase.getTableNumOfColumns(split[0].toLowerCase()))
+                if(!(filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase)))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database " + currentDatabase);
+                if (split.length != filesHandler.getTable(split[0].toLowerCase(), currentDatabase).getSize())
                     throw new SQLException("Syntax Error");
-                currentDatabase.insertRow(split[0].toLowerCase(), values);
-                filesHandler.saveTable(currentDatabase.getTable(split[0].toLowerCase()));
+                filesHandler.getTable(split[0].toLowerCase(), currentDatabase).addRow(values);
+                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
             }
             return 1;
         }
@@ -209,20 +209,20 @@ public class DatabaseManager implements Database {
             query = query.toLowerCase();
             query = query.replaceAll("^\\s*delete\\s+from\\s", "").replaceAll("\\s*;?\\s*$", "");
             if(query.matches("^\\w+$")){
-                if (!filesHandler.isTableExist(query, currentDatabase.getName()))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase.getName());
-                int ans = currentDatabase.clearTable(query);
-                filesHandler.saveTable(currentDatabase.getTable(query));
+                if (!filesHandler.isTableExist(query, currentDatabase))
+                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
+                int ans = filesHandler.getTable(query, currentDatabase).clear();
+                filesHandler.saveTable(filesHandler.getTable(query, currentDatabase));
                 return ans;
             }else{
                 String[] split = parseQuery(query);
-                if(!filesHandler.isTableExist(split[0], currentDatabase.getName()))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase.getName());
-                if(!(currentDatabase.getTable(split[0]).containColumn(split[2])))
+                if(!filesHandler.isTableExist(split[0], currentDatabase))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
+                if(!(filesHandler.getTable(split[0], currentDatabase).containColumn(split[2])))
                     throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
-                Table table = aSwitch.meetCondition(split[3], currentDatabase.getTable(split[0]), split[2], Factory.getInstance().getObject(split[4]));
-                int ans = currentDatabase.deleteItems(split[0], table);
-                filesHandler.saveTable(currentDatabase.getTable(split[0]));
+                Table table = aSwitch.meetCondition(split[3], filesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
+                int ans = filesHandler.getTable(split[0], currentDatabase).deleteItems(table);
+                filesHandler.saveTable(filesHandler.getTable(split[0], currentDatabase));
                 return ans;
             }
         }
@@ -230,10 +230,10 @@ public class DatabaseManager implements Database {
             query = query.replaceAll("(?i)^\\s*update\\s+", "").replaceAll("\\s*;?\\s*$", "");
             if(query.toLowerCase().matches("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)$")){
                 String[] split = query.replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
-                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName()))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase.getName());
+                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase))
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
                 for (int i = 2; i < split.length; i+=2){
-                    if (!currentDatabase.getTable(split[0].toLowerCase()).containColumn(split[i].toLowerCase()))
+                    if (!filesHandler.getTable(split[0].toLowerCase(), currentDatabase).containColumn(split[i].toLowerCase()))
                         throw new SQLException("Column " + split[i] + "doesn't exist in table" + split[0]);
                 }
                 Object[] vals = new Object[split.length-2];
@@ -241,9 +241,9 @@ public class DatabaseManager implements Database {
                     vals[i-2] = split[i];
                     vals[i-1] = Factory.getInstance().getObject(split[i+1]);
                 }
-                currentDatabase.getTable(split[0].toLowerCase()).updateTable(vals);
-                filesHandler.saveTable(currentDatabase.getTable(split[0].toLowerCase()));
-                return currentDatabase.getTable(split[0].toLowerCase()).getIDCounter();
+                filesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(vals);
+                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
+                return filesHandler.getTable(split[0].toLowerCase(), currentDatabase).getIDCounter();
             }
             else{
                 Pattern pattern = Pattern.compile("(?i)^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)");
@@ -252,10 +252,10 @@ public class DatabaseManager implements Database {
                 String[] split = matcher.group().replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
                 query = query.toLowerCase().replaceAll("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)", "");
                 String[] condition = parseQuery(query);
-                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase.getName()))
+                if(!filesHandler.isTableExist(split[0].toLowerCase(), currentDatabase))
                     throw new SQLException();
                 for (int i = 2; i < split.length; i+=2){
-                    if (!currentDatabase.getTable(split[0].toLowerCase()).containColumn(split[i].toLowerCase()))
+                    if (!filesHandler.getTable(split[0].toLowerCase(), currentDatabase).containColumn(split[i].toLowerCase()))
                         throw new SQLException("Column " + split[i] + "doesn't exist in table" + split[0]);
                 }
                 Object[] vals = new Object[split.length-2];
@@ -263,10 +263,10 @@ public class DatabaseManager implements Database {
                     vals[i-2] = split[i];
                     vals[i-1] = Factory.getInstance().getObject(split[i+1]);
                 }
-                Table table = aSwitch.meetCondition(condition[2], currentDatabase.getTable(split[0].toLowerCase()), condition[1], Factory.getInstance().getObject(condition[3]));
+                Table table = aSwitch.meetCondition(condition[2], filesHandler.getTable(split[0].toLowerCase(), currentDatabase), condition[1], Factory.getInstance().getObject(condition[3]));
                 table.updateTable(vals);
-                currentDatabase.getTable(split[0].toLowerCase()).updateTable(table);
-                filesHandler.saveTable(currentDatabase.getTable(split[0].toLowerCase()));
+                filesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(table);
+                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
                 return table.getIDCounter();
 
             }
@@ -322,7 +322,7 @@ public class DatabaseManager implements Database {
         List<Integer> idx = new ArrayList<>();
         input = input.replaceAll("\\s+order\\s+by\\s+", "").replaceAll(",", " ");
         String[] split = input.split("\\s+");
-        List<Column> temp = currentDatabase.getTable(tableName).getColumns();
+        List<Column> temp = filesHandler.getTable(tableName, currentDatabase).getColumns();
         for(int i = 0; i < split.length; i++){
             if(split[i].equals("desc")){
                 idx.set(idx.size()-1 ,idx.get(idx.size()-1) *-1);
@@ -356,7 +356,7 @@ public class DatabaseManager implements Database {
         return table;
     }
 
-    public DatabaseContainer getCurrentDatabase() {
+    public String getCurrentDatabase() {
         return currentDatabase;
     }
 }

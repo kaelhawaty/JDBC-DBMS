@@ -1,8 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
-import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.Parser;
-import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
@@ -25,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 
