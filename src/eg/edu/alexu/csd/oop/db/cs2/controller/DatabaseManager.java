@@ -115,7 +115,7 @@ public class DatabaseManager implements Database {
             if(query.matches("^\\w+\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\')$")){
                 String[] split = parseQuery(query);
                 if(!filesHandler.isTableExist(split[0], currentDatabase))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database " + currentDatabase);
                 if (!filesHandler.getTable(split[0], currentDatabase).containColumn(split[2]))
                     throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
                 Table table = aSwitch.meetCondition(split[3], filesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
@@ -123,7 +123,7 @@ public class DatabaseManager implements Database {
                 tableName = split[0];
             }else {
                 if(!filesHandler.isTableExist(query, currentDatabase))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
+                    throw new SQLException("Table " + query + " doesn't exist in database " + currentDatabase);
                 Table table = filesHandler.getTable(query, currentDatabase);
                 objects = selectTable(table.getColumns(), true);
                 tableName = table.getName();
@@ -137,7 +137,7 @@ public class DatabaseManager implements Database {
             query = query.replaceAll("^(\\w+\\s*,\\s*)*\\w+\\s+from\\s+", "");
             if (query.matches("\\w+")){
                 if(!filesHandler.isTableExist(query, currentDatabase))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
+                    throw new SQLException("Table " + query + " doesn't exist in database " + currentDatabase);
                 Table table = filesHandler.getTable(query, currentDatabase);
                 for (String columnName : columns){
                     if(!table.containColumn(columnName))
@@ -148,7 +148,7 @@ public class DatabaseManager implements Database {
             }else{
                 String[] split = parseQuery(query);
                 if(!filesHandler.isTableExist(split[0], currentDatabase))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
+                    throw new SQLException("Table " + split[0] + " doesn't exist in database " + currentDatabase);
                 for (String columnName : columns){
                     if(!filesHandler.getTable(split[0], currentDatabase).containColumn(columnName))
                         throw new SQLException("Column " + columnName + "doesn't exist in table" + split[0]);

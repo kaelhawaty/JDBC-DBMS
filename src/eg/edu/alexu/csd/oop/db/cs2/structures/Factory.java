@@ -36,7 +36,7 @@ public class Factory {
         }else if(obj1 instanceof String && obj2 instanceof String){
             String a = (String) obj1;
             String b = (String) obj2;
-            return a.compareTo(b);
+            return a.toLowerCase().compareTo(b.toLowerCase());
         }else{
             throw new ClassCastException("Unsupported data-type");
         }
