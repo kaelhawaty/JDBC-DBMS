@@ -55,7 +55,7 @@ public class FilesHandler {
     }
     public static Table getTable(String tableName, String databaseName) throws SQLException {
         Table table = DatabaseManager.getInstance().getCurrentTable();
-        if(table.getName().equals(tableName)){
+        if(table != null && table.getName().equals(tableName)){
             return table;
         }
         table = xml.loadTable(tableName, databaseName);
