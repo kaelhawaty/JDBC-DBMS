@@ -189,15 +189,15 @@ public class DatabaseManager implements Database {
         String[] split = input.split("\\s+");
         List<Column> temp = currentTable.getColumns();
         for(int i = 0; i < split.length; i++){
-            if(split[i].equals("desc")){
+            if(split[i].equalsIgnoreCase("desc")){
                 idx.set(idx.size()-1 ,idx.get(idx.size()-1) *-1);
                 continue;
-            }else if(split[i].equals("asc")){
+            }else if(split[i].equalsIgnoreCase("asc")){
                continue;
             }
             int j;
             for(j = 1; j < temp.size(); j++){
-                if(temp.get(j).getName().equals(split[i])){
+                if(temp.get(j).getName().equalsIgnoreCase(split[i])){
                     break;
                 }
             }

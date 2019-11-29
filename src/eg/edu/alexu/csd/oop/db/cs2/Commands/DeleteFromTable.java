@@ -9,6 +9,7 @@ public class DeleteFromTable implements Command {
     public int execute(String query) throws SQLException {
         query = query.toLowerCase();
         query = query.replaceAll("^\\s*delete\\s+from\\s", "").replaceAll("\\s*;?\\s*$", "");
+        String[] split = query.split();
         return 0;
     }
 }
