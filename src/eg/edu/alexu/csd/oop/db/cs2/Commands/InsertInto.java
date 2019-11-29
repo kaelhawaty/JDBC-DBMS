@@ -14,7 +14,7 @@ import java.util.List;
 public class InsertInto implements Command {
     @Override
     public int execute(String query) throws SQLException {
-        query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "").replaceAll("[\\(\\),]", " ");;
+        query = query.replaceAll("(?i)(^\\s*insert\\s+into\\s+)", "").replaceAll("\\s*;?\\s*$", "").replaceAll("[\\(\\),]", " ");;
         String[] split = query.split("(?i)(\\s+values\\s+)"); // 0: tablename cols 1: values
         String[] cols = split[0].split("\\s+"); // + tablename;
         String[] values = split[1].split("\\s+");
@@ -39,7 +39,7 @@ public class InsertInto implements Command {
             }else
                 throw new SQLException("Column " + cols[i+1] + "doesn't exist in table" + cols[0]);
         }
-        FilesHandler.getTable(cols[0].toLowerCase(), DatabaseManager.getInstance().getCurrentDatabase()).addRow(hashMap);
+        table.addRow(hashMap);
         FilesHandler.saveTable(table);
         return 1;
     }
