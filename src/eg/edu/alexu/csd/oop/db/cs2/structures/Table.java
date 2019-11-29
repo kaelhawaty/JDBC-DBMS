@@ -153,4 +153,7 @@ public class Table {
     public void setName(String name){
         this.name = name;
     }
+    public void setIDCounter(int x){
+        IDCounter = x;
+    }
 }

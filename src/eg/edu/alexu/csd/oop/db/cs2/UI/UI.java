@@ -9,7 +9,11 @@ public class UI {
         QueriesParser qp = new QueriesParser();
         Scanner scan = new Scanner(System.in);
         while(true){
+            System.out.println("Enter a valid SQL command: (To exit type 'close')");
             s = scan.nextLine();
+            if(s.equalsIgnoreCase("close")){
+                break;
+            }
             qp.execute(s);
         }
     }
