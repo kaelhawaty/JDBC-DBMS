@@ -187,7 +187,7 @@ public class DatabaseManager implements Database {
                 }else
                     throw new SQLException("Syntax Error");
                 filesHandler.getTable(split[0].toLowerCase(), currentDatabase).addRow(hashMap);
-                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
+                filesHandler.saveTable(currentTable);
             }else{
                 query = query.replaceAll("(?i)^\\s*insert\\s+into\\s+", "").replaceAll("\\s*;?\\s*$", "").replaceAll("(?i)(values)", "");
                 query = query.replaceAll("[(\\),]", " ");
@@ -201,7 +201,7 @@ public class DatabaseManager implements Database {
                 if (split.length != filesHandler.getTable(split[0].toLowerCase(), currentDatabase).getSize())
                     throw new SQLException("Syntax Error");
                 filesHandler.getTable(split[0].toLowerCase(), currentDatabase).addRow(values);
-                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
+                filesHandler.saveTable(currentTable);
             }
             return 1;
         }
@@ -212,7 +212,7 @@ public class DatabaseManager implements Database {
                 if (!filesHandler.isTableExist(query, currentDatabase))
                     throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
                 int ans = filesHandler.getTable(query, currentDatabase).clear();
-                filesHandler.saveTable(filesHandler.getTable(query, currentDatabase));
+                filesHandler.saveTable(currentTable);
                 return ans;
             }else{
                 String[] split = parseQuery(query);
@@ -222,7 +222,7 @@ public class DatabaseManager implements Database {
                     throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
                 Table table = aSwitch.meetCondition(split[3], filesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
                 int ans = filesHandler.getTable(split[0], currentDatabase).deleteItems(table);
-                filesHandler.saveTable(filesHandler.getTable(split[0], currentDatabase));
+                filesHandler.saveTable(currentTable);
                 return ans;
             }
         }
@@ -242,7 +242,7 @@ public class DatabaseManager implements Database {
                     vals[i-1] = Factory.getInstance().getObject(split[i+1]);
                 }
                 filesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(vals);
-                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
+                filesHandler.saveTable(currentTable);
                 return filesHandler.getTable(split[0].toLowerCase(), currentDatabase).getIDCounter();
             }
             else{
@@ -266,7 +266,7 @@ public class DatabaseManager implements Database {
                 Table table = aSwitch.meetCondition(condition[2], filesHandler.getTable(split[0].toLowerCase(), currentDatabase), condition[1], Factory.getInstance().getObject(condition[3]));
                 table.updateTable(vals);
                 filesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(table);
-                filesHandler.saveTable(filesHandler.getTable(split[0].toLowerCase(), currentDatabase));
+                filesHandler.saveTable(currentTable);
                 return table.getIDCounter();
 
             }
@@ -358,5 +358,11 @@ public class DatabaseManager implements Database {
 
     public String getCurrentDatabase() {
         return currentDatabase;
+    }
+    public Table getCurrentTable(){
+        return currentTable;
+    }
+    public void setCurrentTable(Table table){
+        currentTable = table;
     }
 }

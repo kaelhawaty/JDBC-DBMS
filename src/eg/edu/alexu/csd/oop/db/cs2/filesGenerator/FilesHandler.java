@@ -1,8 +1,11 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
+import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.Parser;
 import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
+
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -52,9 +55,14 @@ public class FilesHandler {
         return xmlFile.exists() && dtdFile.exists();
     }
     public Table getTable(String tableName, String databaseName) throws SQLException {
-        Table table = xml.loadTable(tableName, databaseName, this);
+        Table table = DatabaseManager.getInstance().getCurrentTable();
+        if(table.getName().equals(tableName)){
+            return table;
+        }
+        table = xml.loadTable(tableName, databaseName, this);
         if(table == null)
             throw new SQLException("Couldn't load table!");
+        DatabaseManager.getInstance().setCurrentTable(table);
         return table;
     }
     public void dropTable(String tableName, String databaseName){
