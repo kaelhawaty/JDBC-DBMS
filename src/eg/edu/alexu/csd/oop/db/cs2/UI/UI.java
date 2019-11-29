@@ -8,7 +8,7 @@ public class UI {
         String s;
         QueriesParser qp = new QueriesParser();
         Scanner scan = new Scanner(System.in);
-        while (true){
+        while(true){
             s = scan.nextLine();
             qp.execute(s);
         }
