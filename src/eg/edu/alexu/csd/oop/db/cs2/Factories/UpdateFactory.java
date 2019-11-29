@@ -4,6 +4,7 @@ import eg.edu.alexu.csd.oop.db.cs2.AbstractFactory;
 import eg.edu.alexu.csd.oop.db.cs2.Command;
 import eg.edu.alexu.csd.oop.db.cs2.Commands.DeleteFromTable;
 import eg.edu.alexu.csd.oop.db.cs2.Commands.InsertInto;
+import eg.edu.alexu.csd.oop.db.cs2.Commands.UpdateTable;
 import eg.edu.alexu.csd.oop.db.cs2.controller.QueriesParser;
 import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.FilesHandler;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
@@ -30,7 +31,7 @@ public class UpdateFactory implements AbstractFactory {
         }else if (QueriesParser.checkDeleteFromTable(query)){
             return new DeleteFromTable();
         }else if(QueriesParser.checkUpdate(query)){
-
+            return new UpdateTable();
         }
         throw new SQLException("Syntax Error");
 

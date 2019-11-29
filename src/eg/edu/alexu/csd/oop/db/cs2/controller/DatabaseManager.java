@@ -83,85 +83,10 @@ public class DatabaseManager implements Database {
     }
 
     @Override
-    public int executeUpdateQuery(String query) throws SQLException, IOException {
+    public int executeUpdateQuery(String query) throws SQLException {
         if(currentDatabase == null)
             return 0;
-        if (QueriesParser.checkInsertInto(query)){
-            return UpdateFactory.getInstance().create(query).execute(query);
-        }
-        else if (QueriesParser.checkDeleteFromTable(query)){
-            return UpdateFactory.getInstance().create(query).execute(query);
-        }
-        else if(QueriesParser.checkUpdate(query)){
-            query = query.replaceAll("(?i)^\\s*update\\s+", "").replaceAll("\\s*;?\\s*$", "");
-            if(query.toLowerCase().matches("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)$")){
-                String[] split = query.replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
-                if(!FilesHandler.isTableExist(split[0].toLowerCase(), currentDatabase))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
-                for (int i = 2; i < split.length; i+=2){
-                    if (!FilesHandler.getTable(split[0].toLowerCase(), currentDatabase).containColumn(split[i].toLowerCase()))
-                        throw new SQLException("Column " + split[i] + "doesn't exist in table" + split[0]);
-                }
-                Object[] vals = new Object[split.length-2];
-                for(int i = 2; i < split.length; i+= 2){
-                    vals[i-2] = split[i];
-                    vals[i-1] = Factory.getInstance().getObject(split[i+1]);
-                }
-                FilesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(vals);
-                FilesHandler.saveTable(currentTable);
-                return FilesHandler.getTable(split[0].toLowerCase(), currentDatabase).getIDCounter();
-            }
-            else{
-                Pattern pattern = Pattern.compile("(?i)^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)");
-                Matcher matcher = pattern.matcher(query);
-                matcher.find();
-                String[] split = matcher.group().replaceAll("\\,", " ").replaceAll("=", " ").split("\\s+");
-                query = query.toLowerCase().replaceAll("^\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)", "");
-                String[] condition = parseQuery(query);
-                if(!FilesHandler.isTableExist(split[0].toLowerCase(), currentDatabase))
-                    throw new SQLException();
-                for (int i = 2; i < split.length; i+=2){
-                    if (!FilesHandler.getTable(split[0].toLowerCase(), currentDatabase).containColumn(split[i].toLowerCase()))
-                        throw new SQLException("Column " + split[i] + "doesn't exist in table" + split[0]);
-                }
-                Object[] vals = new Object[split.length-2];
-                for(int i = 2; i < split.length; i+= 2){
-                    vals[i-2] = split[i];
-                    vals[i-1] = Factory.getInstance().getObject(split[i+1]);
-                }
-                Table table = aSwitch.meetCondition(condition[2], FilesHandler.getTable(split[0].toLowerCase(), currentDatabase), condition[1], Factory.getInstance().getObject(condition[3]));
-                table.updateTable(vals);
-                FilesHandler.getTable(split[0].toLowerCase(), currentDatabase).updateTable(table);
-                FilesHandler.saveTable(currentTable);
-                return table.getIDCounter();
-
-            }
-        }
-        else
-            throw new SQLException("Syntax Error");
-    }
-    private String[] parseQuery(String query){
-        String[] split = new String[5];
-        int j = 0;
-        split[0] = new String();
-        query = query.replaceAll("\\s+", " ");
-        for (int i = 0; i < query.length(); ++i) {
-            if (query.charAt(i) == ' ' && !(query.charAt(i-1) == '=' || query.charAt(i-1) == '<' || query.charAt(i-1) == '>')) {
-                j++;
-                split[j] = new String();
-            } else if (query.charAt(i) == '=' || query.charAt(i) == '<' || query.charAt(i) == '>') {
-                if (query.charAt(i-1) != ' ')
-                    j++;
-                split[j] = String.valueOf(query.charAt(i));
-                j++;
-                split[j] = new String();
-            } else {
-                if(query.charAt(i) == ' ')
-                    continue;
-                split[j] += String.valueOf(query.charAt(i));
-            }
-        }
-        return split;
+        return UpdateFactory.getInstance().create(query).execute(query);
     }
 
     public Object[][] sortTable(Object[][] table, String input) throws SQLException {
