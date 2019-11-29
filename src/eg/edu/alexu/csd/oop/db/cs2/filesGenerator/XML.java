@@ -66,7 +66,11 @@ public class XML implements Parser {
                if(i != list.size()-1)
                    sb.append(',');
             }
-            writer.write("<!ELEMENT Table (" + sb.toString() +")>");
+            if(sb.toString().equals("")){
+                writer.write("<!ELEMENT Table EMPTY>");
+            }else {
+                writer.write("<!ELEMENT Table (" + sb.toString() + ")>");
+            }
             writer.newLine();
             writer.write("<!ATTLIST Table");
             writer.newLine();
@@ -83,7 +87,11 @@ public class XML implements Parser {
                 }
             }
             for(int i = 0; i < list.size(); i++) {
-                writer.write("<!ELEMENT " + list.get(i).getName() + " (" + sb.toString() + ")>");
+                if(sb.toString().equals("")) {
+                    writer.write("<!ELEMENT " + list.get(i).getName() + " EMPTY>");
+                }else{
+                    writer.write("<!ELEMENT " + list.get(i).getName() + " (" + sb.toString() + ")>");
+                }
                 writer.newLine();
                 writer.write("<!ATTLIST "+ list.get(i).getName());
                 writer.newLine();
@@ -93,13 +101,15 @@ public class XML implements Parser {
                 writer.newLine();
                 writer.newLine();
             }
-            writer.write("<!ELEMENT Record (#PCDATA)>");
-            writer.newLine();
-            writer.write("<!ATTLIST Record");
-            writer.newLine();
-            writer.write("  xmlns CDATA #FIXED ''>");
-            writer.newLine();
-            writer.newLine();
+            if(table.getColumns().get(0).getSize() != 0) {
+                writer.write("<!ELEMENT Record (#PCDATA)>");
+                writer.newLine();
+                writer.write("<!ATTLIST Record");
+                writer.newLine();
+                writer.write("  xmlns CDATA #FIXED ''>");
+                writer.newLine();
+                writer.newLine();
+            }
             writer.close();
 
         } catch (Exception e) {
