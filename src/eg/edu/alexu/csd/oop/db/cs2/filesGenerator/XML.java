@@ -159,6 +159,7 @@ public class XML implements Parser {
                     cnt++;
                 }
             }
+            table.setIDCounter(table.getColumns().get(0).getSize());
         }catch (ParserConfigurationException | IOException | SAXException | SQLException e) {
             e.printStackTrace();
         }
