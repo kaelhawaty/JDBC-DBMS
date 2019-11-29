@@ -8,33 +8,32 @@ import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.logging.FileHandler;
 
 public class FilesHandler {
-    private File mainPath;
-    private String fileSeparator = System.getProperty("file.separator");
-    private Parser xml;
-    public FilesHandler(){
-        mainPath = new File("DatabasesWorkSpace");
-        mainPath.mkdirs();
-        xml = new XML();
+    private static File mainPath  = new File("DatabasesWorkSpace");
+    private static String fileSeparator = System.getProperty("file.separator");
+    private static Parser xml = xml = new XML();
+    private FilesHandler(){
+
     }
-    public String getPathOf(String name){
+    public static String getPathOf(String name){
         return mainPath.getAbsolutePath()+fileSeparator+name;
     }
-    public String getPathOfTable(String tableName, String databaseName){
+    public static String getPathOfTable(String tableName, String databaseName){
         return mainPath.getAbsolutePath()+fileSeparator+databaseName+fileSeparator+tableName;
     }
-    public boolean isDatabaseExist(String name){
+    public static boolean isDatabaseExist(String name){
         if (name == null)
             return false;
         File f = new File(mainPath+fileSeparator+name);
         return f.exists();
     }
-    public void createDatabase(String databaseName){
+    public static void createDatabase(String databaseName){
         File newDatabase = new File(mainPath+fileSeparator+databaseName);
         newDatabase.mkdirs();
     }
-    private void deleteDirectory(File directory){
+    private static void deleteDirectory(File directory){
         File[] contents = directory.listFiles();
         for (File file : contents){
             if(file.isDirectory())
@@ -44,35 +43,35 @@ public class FilesHandler {
         }
         directory.delete();
     }
-    public void dropDatabase(String name){
+    public static void dropDatabase(String name){
         deleteDirectory(new File(mainPath+fileSeparator+name));
     }
-    public boolean isTableExist(String tableName, String databaseName){
+    public static boolean isTableExist(String tableName, String databaseName){
         if (tableName == null || databaseName == null)
             return false;
         File xmlFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
         File dtdFile = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
         return xmlFile.exists() && dtdFile.exists();
     }
-    public Table getTable(String tableName, String databaseName) throws SQLException {
+    public static Table getTable(String tableName, String databaseName) throws SQLException {
         Table table = DatabaseManager.getInstance().getCurrentTable();
         if(table != null && table.getName().equals(tableName)){
             return table;
         }
-        table = xml.loadTable(tableName, databaseName, this);
+        table = xml.loadTable(tableName, databaseName);
         if(table == null)
             throw new SQLException("Couldn't load table!");
         DatabaseManager.getInstance().setCurrentTable(table);
         return table;
     }
-    public void dropTable(String tableName, String databaseName){
+    public static void dropTable(String tableName, String databaseName){
         File xml = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".xml");
         File dtd = new File(mainPath+fileSeparator+databaseName+fileSeparator+tableName+".dtd");
         xml.delete();
         dtd.delete();
     }
-    public void saveTable(Table table){
-        xml.saveTable(table, DatabaseManager.getInstance().getCurrentDatabase(), this);
+    public static void saveTable(Table table){
+        xml.saveTable(table, DatabaseManager.getInstance().getCurrentDatabase());
     }
 
 }

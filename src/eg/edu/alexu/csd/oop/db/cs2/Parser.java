@@ -8,6 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 public interface Parser {
-    public  void saveTable(Table table, String dataBaseName, FilesHandler filesHandler);
-    public Table loadTable(String TableName, String dataBaseName, FilesHandler filesHandler);
+    public  void saveTable(Table table, String dataBaseName);
+    public Table loadTable(String TableName, String dataBaseName);
 }

@@ -1,4 +1,4 @@
-package eg.edu.alexu.csd.oop.db.cs2.structures;
+package eg.edu.alexu.csd.oop.db.cs2.Factories;
 
 public class Factory {
     static Factory instance;
