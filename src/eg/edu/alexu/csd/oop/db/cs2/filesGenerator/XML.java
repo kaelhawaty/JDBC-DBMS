@@ -2,7 +2,7 @@ package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
 import eg.edu.alexu.csd.oop.db.cs2.Parser;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
-import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
+import eg.edu.alexu.csd.oop.db.cs2.Factories.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 import org.w3c.dom.Document;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class XML implements Parser {
     @Override
-    public  void saveTable(Table table, String dataBaseName, FilesHandler filesHandler) {
+    public  void saveTable(Table table, String dataBaseName) {
         DocumentBuilderFactory DOM = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -54,11 +54,11 @@ public class XML implements Parser {
             DOMSource source = new DOMSource(doc);
 
             //write to file
-            StreamResult file = new StreamResult(new File(filesHandler.getPathOfTable(table.getName(), dataBaseName) + ".xml"));
+            StreamResult file = new StreamResult(new File(FilesHandler.getPathOfTable(table.getName(), dataBaseName) + ".xml"));
             transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, table.getName() + ".dtd");
             transformer.transform(source, file);
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filesHandler.getPathOfTable(table.getName(), dataBaseName)+".dtd"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(FilesHandler.getPathOfTable(table.getName(), dataBaseName)+".dtd"));
             StringBuilder sb = new StringBuilder();
             List<Column> list = table.getColumns();
             for(int i = 0; i < list.size(); i++){
@@ -131,11 +131,11 @@ public class XML implements Parser {
         return colomn;
     }
     @Override
-    public Table loadTable(String TableName, String dataBaseName, FilesHandler filesHandler) {
+    public Table loadTable(String TableName, String dataBaseName) {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         Table table = null;
         try {
-            File xmlFile = XMLValidator.validate(filesHandler.getPathOfTable(TableName, dataBaseName) + ".xml");
+            File xmlFile = XMLValidator.validate(FilesHandler.getPathOfTable(TableName, dataBaseName) + ".xml");
             table = new Table();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(xmlFile);
@@ -159,6 +159,7 @@ public class XML implements Parser {
                     cnt++;
                 }
             }
+            table.setIDCounter(table.getColumns().get(0).getSize());
         }catch (ParserConfigurationException | IOException | SAXException | SQLException e) {
             e.printStackTrace();
         }

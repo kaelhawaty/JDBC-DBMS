@@ -1,6 +1,8 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
 
+import eg.edu.alexu.csd.oop.db.cs2.Factories.Factory;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,5 +152,8 @@ public class Table {
     }
     public void setName(String name){
         this.name = name;
+    }
+    public void setIDCounter(int x){
+        IDCounter = x;
     }
 }

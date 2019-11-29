@@ -53,7 +53,7 @@ public class QueriesParser {
         return input.toLowerCase().matches("^\\s*delete\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\'))?\\s*;?\\s*$");
     }
     public static boolean checkExecuteQuery(String input) {
-        return input.toLowerCase().matches("^\\s*select\\s+(\\w+,\\s+)*(\\w+|\\*)\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\'))?(\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?))?\\s*;?\\s*$");
+        return input.toLowerCase().matches("^\\s*select\\s+(((\\w+,\\s+)*\\w+)|\\*)\\s+from\\s+\\w+\\s*(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\'))?(\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?))?\\s*;?\\s*$");
     }
     public static boolean checkUpdate(String input){
         return input.toLowerCase().matches("^\\s*update\\s+\\w+\\s+set\\s+(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*,\\s*)*\\s*(\\w+\\s*=\\s*([0-9]+|\\'\\s*\\w+\\s*\\')\\s*)(\\s+where\\s+\\w+\\s*[=<>]\\s*([0-9]+|\\'\\w+\\'))?\\s*;?\\s*$");
