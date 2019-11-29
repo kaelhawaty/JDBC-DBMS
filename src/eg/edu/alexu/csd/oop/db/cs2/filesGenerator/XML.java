@@ -1,8 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2.filesGenerator;
 
-import eg.edu.alexu.csd.oop.db.cs2.Database;
 import eg.edu.alexu.csd.oop.db.cs2.Parser;
-import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.Record;
@@ -25,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -69,7 +66,11 @@ public class XML implements Parser {
                if(i != list.size()-1)
                    sb.append(',');
             }
-            writer.write("<!ELEMENT Table (" + sb.toString() +")>");
+            if(sb.toString().equals("")){
+                writer.write("<!ELEMENT Table EMPTY>");
+            }else {
+                writer.write("<!ELEMENT Table (" + sb.toString() + ")>");
+            }
             writer.newLine();
             writer.write("<!ATTLIST Table");
             writer.newLine();
@@ -86,7 +87,11 @@ public class XML implements Parser {
                 }
             }
             for(int i = 0; i < list.size(); i++) {
-                writer.write("<!ELEMENT " + list.get(i).getName() + " (" + sb.toString() + ")>");
+                if(sb.toString().equals("")) {
+                    writer.write("<!ELEMENT " + list.get(i).getName() + " EMPTY>");
+                }else{
+                    writer.write("<!ELEMENT " + list.get(i).getName() + " (" + sb.toString() + ")>");
+                }
                 writer.newLine();
                 writer.write("<!ATTLIST "+ list.get(i).getName());
                 writer.newLine();
@@ -96,13 +101,15 @@ public class XML implements Parser {
                 writer.newLine();
                 writer.newLine();
             }
-            writer.write("<!ELEMENT Record (#PCDATA)>");
-            writer.newLine();
-            writer.write("<!ATTLIST Record");
-            writer.newLine();
-            writer.write("  xmlns CDATA #FIXED ''>");
-            writer.newLine();
-            writer.newLine();
+            if(table.getColumns().get(0).getSize() != 0) {
+                writer.write("<!ELEMENT Record (#PCDATA)>");
+                writer.newLine();
+                writer.write("<!ATTLIST Record");
+                writer.newLine();
+                writer.write("  xmlns CDATA #FIXED ''>");
+                writer.newLine();
+                writer.newLine();
+            }
             writer.close();
 
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package eg.edu.alexu.csd.oop.db.cs2.structures;
+/*package eg.edu.alexu.csd.oop.db.cs2.structures;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,3 +61,4 @@ public class DatabaseContainer {
         return curTable.deleteItems(toDelete);
     }
 }
+*/
