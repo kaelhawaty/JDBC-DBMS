@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.conditions;
 
 import eg.edu.alexu.csd.oop.db.cs2.ConditionsFilter;
+import eg.edu.alexu.csd.oop.db.cs2.Factories.Factory;
 import eg.edu.alexu.csd.oop.db.cs2.structures.*;
 
 import java.sql.SQLException;

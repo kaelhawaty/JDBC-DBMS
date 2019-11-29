@@ -1,5 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
+import eg.edu.alexu.csd.oop.db.cs2.Factories.Factory;
+
 import java.sql.SQLException;
 
 public class Record {

@@ -1,5 +1,7 @@
 package eg.edu.alexu.csd.oop.db.cs2.structures;
 
+import eg.edu.alexu.csd.oop.db.cs2.Factories.Factory;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +56,8 @@ public class Column{
     }
     public void updateRecord(int index, Record newRecord) throws SQLException {
         this.records.get(index).setValue(newRecord.getValue());
+    }
+    public String toString(){
+        return name;
     }
 }
