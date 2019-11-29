@@ -2,6 +2,7 @@ package eg.edu.alexu.csd.oop.db.cs2.Factories;
 
 import eg.edu.alexu.csd.oop.db.cs2.AbstractFactory;
 import eg.edu.alexu.csd.oop.db.cs2.Command;
+import eg.edu.alexu.csd.oop.db.cs2.Commands.DeleteFromTable;
 import eg.edu.alexu.csd.oop.db.cs2.Commands.InsertInto;
 import eg.edu.alexu.csd.oop.db.cs2.controller.QueriesParser;
 import eg.edu.alexu.csd.oop.db.cs2.filesGenerator.FilesHandler;
@@ -27,7 +28,7 @@ public class UpdateFactory implements AbstractFactory {
         if (QueriesParser.checkInsertInto(query)){
             return new InsertInto();
         }else if (QueriesParser.checkDeleteFromTable(query)){
-
+            return new DeleteFromTable();
         }else if(QueriesParser.checkUpdate(query)){
 
         }

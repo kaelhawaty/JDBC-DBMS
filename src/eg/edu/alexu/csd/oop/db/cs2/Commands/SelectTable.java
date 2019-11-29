@@ -16,11 +16,12 @@ public class SelectTable {
     private Switch aSwitch = new Switch();
     private Object[][] objects;
     public Object[][] execute(String query) throws SQLException {
-        query = query.replaceAll("\\s*select\\s*", "").replaceAll("\\s*;?\\s*$", "");;
-        String[] split = query.split("\\s+from\\s+"); // split[0] = columns name.., split[1] = tablename where ...
+        query = query.toLowerCase();
+        query = query.replaceAll("(\\s*select\\s*)", "").replaceAll("\\s*;?\\s*$", "");;
+        String[] split = query.split("(\\s+from\\s+)"); // split[0] = columns name.., split[1] = tablename where ...
         String columns[] = split[0].replaceAll(",", " ").split("\\s+");
-        String[] split2 = (split[1].contains("where"))  ? split[1].split("\\s+where\\s+") : (new String[]{split[1], ""}); // split2[0] == tableName, split2[1] == condition;
-        split2[0] = split2[0].replaceAll("\\s+", ""); // clearing spaces;
+        String[] split2 = (split[1].contains("where"))  ? split[1].split("(\\s+where\\s+)") : (new String[]{split[1], ""}); // split2[0] == tableName, split2[1] == condition;
+        split2[0] = split2[0].replaceAll("\\s+", "").toLowerCase(); // clearing spaces;
         String[] condition = normalize(split2[1]).split("\\s+");
         if(!FilesHandler.isTableExist(split2[0], DatabaseManager.getInstance().getCurrentDatabase()))
             throw new SQLException("Table " + split2[0] + " doesn't exist in database" + DatabaseManager.getInstance().getCurrentDatabase());

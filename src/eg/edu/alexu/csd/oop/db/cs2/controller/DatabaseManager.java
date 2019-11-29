@@ -66,15 +66,14 @@ public class DatabaseManager implements Database {
             throw new SQLException("There is no current active Database!");
         }
         Object[][] objects;
-        query = query.toLowerCase();
         if (!QueriesParser.checkExecuteQuery(query))
             throw new SQLException("Synatx Error");
-       Pattern p = Pattern.compile("\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?");
+       Pattern p = Pattern.compile("(?i)(\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?)");
         Matcher m = p.matcher(query);
         String order = null;
         if(m.find()){
             order = m.group();
-            query = query.replaceAll("\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?", "");
+            query = query.replaceAll("(?i)(\\s+order\\s+by\\s+(\\w+\\s*(\\s+(asc|desc))?\\s*,\\s*)*(\\w+\\s*(\\s+(asc|desc))?)(asc|desc)?)", "");
         }
         objects = new SelectTable().execute(query);
         if(order != null){
@@ -91,25 +90,7 @@ public class DatabaseManager implements Database {
             return UpdateFactory.getInstance().create(query).execute(query);
         }
         else if (QueriesParser.checkDeleteFromTable(query)){
-            query = query.toLowerCase();
-            query = query.replaceAll("^\\s*delete\\s+from\\s", "").replaceAll("\\s*;?\\s*$", "");
-            if(query.matches("^\\w+$")){
-                if (!FilesHandler.isTableExist(query, currentDatabase))
-                    throw new SQLException("Table " + query + " doesn't exist in database" + currentDatabase);
-                int ans = FilesHandler.getTable(query, currentDatabase).clear();
-                FilesHandler.saveTable(currentTable);
-                return ans;
-            }else{
-                String[] split = parseQuery(query);
-                if(!FilesHandler.isTableExist(split[0], currentDatabase))
-                    throw new SQLException("Table " + split[0] + " doesn't exist in database" + currentDatabase);
-                if(!(FilesHandler.getTable(split[0], currentDatabase).containColumn(split[2])))
-                    throw new SQLException("Column " + split[2] + "doesn't exist in table" + split[0]);
-                Table table = aSwitch.meetCondition(split[3], FilesHandler.getTable(split[0], currentDatabase), split[2], Factory.getInstance().getObject(split[4]));
-                int ans = FilesHandler.getTable(split[0], currentDatabase).deleteItems(table);
-                FilesHandler.saveTable(currentTable);
-                return ans;
-            }
+            return UpdateFactory.getInstance().create(query).execute(query);
         }
         else if(QueriesParser.checkUpdate(query)){
             query = query.replaceAll("(?i)^\\s*update\\s+", "").replaceAll("\\s*;?\\s*$", "");
