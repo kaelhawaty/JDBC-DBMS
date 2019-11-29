@@ -36,5 +36,6 @@ We have used Filter design pattern in Conditions where there is a ConditionFilte
 For each Command, There is a class that implements the Command interface such that every command can be simply executes as command.exec(). There factory classes which generate the correct command for a specific query
 
 ---
+[For more information click here to see the report](https://docs.google.com/document/d/1k_NcYXbBpo8ZNWKau0oEyErSZUIs3qWIJf_lJLDGVd0/edit?usp=sharing)
 
-
+---
