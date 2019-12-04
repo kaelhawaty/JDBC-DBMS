@@ -80,7 +80,7 @@ public class XML implements Parser {
             writer.newLine();
             writer.newLine();
             sb.setLength(0);
-            for (int i= 0 ; i <table.getColumns().get(0).getSize(); i++){
+            for (int i= 0 ; table.getColumns().size() != 0&& i <table.getColumns().get(0).getSize(); i++){
                 sb.append("Record");
                 if(table.getColumns().get(0).getSize()-1 != i){
                     sb.append(",");
@@ -101,7 +101,7 @@ public class XML implements Parser {
                 writer.newLine();
                 writer.newLine();
             }
-            if(table.getColumns().get(0).getSize() != 0) {
+            if(table.getColumns().size() != 0 && table.getColumns().get(0).getSize() != 0) {
                 writer.write("<!ELEMENT Record (#PCDATA)>");
                 writer.newLine();
                 writer.write("<!ATTLIST Record");
