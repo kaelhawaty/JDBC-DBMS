@@ -16,6 +16,7 @@ public class DBDriver implements java.sql.Driver{
         if(url == null)
             return false;
         String[] urlData = url.split(":");
+        DBLogger.getInstance().getLogger().info("url Accepted: "+url);
         return urlData.length == 3 && urlData[0].equalsIgnoreCase("jdbc") && urlData[1].equalsIgnoreCase("xmldb") && urlData[2].equalsIgnoreCase("//localhost");
     }
 
