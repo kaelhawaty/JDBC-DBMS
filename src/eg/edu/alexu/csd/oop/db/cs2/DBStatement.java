@@ -83,11 +83,11 @@ public class DBStatement implements java.sql.Statement{
                 indexToType.put(i-1, list.get(i).getType());
             }
             resultSet = new DBResultset(schema.getName(), colToIndex, indexToType, table, this);
-            return table != null;
+            return table.length != 0;
 
         }else if(checkUpdateQuery(sql)){
             currentResult = databaseManager.executeUpdateQuery(sql);
-            return false;
+            return true;
         }
         throw new SQLException("Syntax Error");
     }
@@ -145,17 +145,40 @@ public class DBStatement implements java.sql.Statement{
             Object[][] table = databaseManager.executeQuery(sql);
             Table schema = new Table(databaseManager.getCurrentTable());
             List<Column> list = schema.getColumns();
+            Set<String> s = parseQuery(sql, list);
             Map<String, Integer> colToIndex = new HashMap<>();
             Map<Integer, String> indexToType = new HashMap<>();
+            int cnt = 0;
             for(int i = 1; i < list.size(); i++){
-                colToIndex.put(list.get(i).getName(), i-1);
-                indexToType.put(i-1, list.get(i).getType());
+                if (s.contains(list.get(i).getName())) {
+                    colToIndex.put(list.get(i).getName(), cnt);
+                    indexToType.put(cnt, list.get(i).getType());
+                    cnt++;
+                }
             }
             resultSet = new DBResultset(schema.getName(), colToIndex, indexToType, table, this);
             return resultSet;
         }
 
         throw new SQLException("Syntax Error");
+    }
+    public Set<String> parseQuery(String query, List<Column> list){
+        Set<String> set = new HashSet<>();
+        query = query.toLowerCase();
+        query = query.replaceAll("\\s*select\\s*", "");
+        String[] split = query.split("\\s*from\\s*");
+        split[0] = split[0].replaceAll("\\s+" , "");
+        String[] cols = split[0].split(",");
+        if(cols[0].equals("*")){
+            for(int i = 1; i < list.size(); i++){
+                set.add(list.get(i).getName());
+            }
+        }else{
+            for(String s: cols){
+                set.add(s);
+            }
+        }
+        return set;
     }
 
     @Override
