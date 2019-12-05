@@ -1,54 +1,205 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
+import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
+import eg.edu.alexu.csd.oop.db.cs2.controller.QueriesParser;
+import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
+import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
+
+import java.io.IOException;
+import java.lang.annotation.Target;
+import java.sql.*;
+import java.util.*;
 
 public class DBStatement implements java.sql.Statement{
-    @Override
-    public void addBatch(String sql){
-
+    private DatabaseManager databaseManager;
+    private Connection connection;
+    private Queue<String> commands;
+    private Queue<Object> results;
+    private boolean isClosed;
+    private ResultSet resultSet;
+    private int currentResult;
+    private int timeout;
+    public DBStatement(DatabaseManager databaseManager, Connection connection){
+        this.databaseManager = databaseManager;
+        this.connection = connection;
+        commands = new LinkedList<>();
+        isClosed = false;
+        resultSet = new DBResultset();
+        timeout = 100;
     }
     @Override
-    public void clearBatch(){
-
+    public void addBatch(String sql) throws SQLException {
+            if(isClosed){
+                throw new SQLException("This statement is already closed");
+            }
+            commands.add(sql);
     }
     @Override
-    public void close() {
+    public void clearBatch() throws SQLException {
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        commands.clear();
+    }
+    @Override
+    public void close() throws SQLException {
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        isClosed = true;
+        commands = null;
+        databaseManager = null;
+        if(resultSet != null){
+            resultSet.close();
+        }
+        resultSet = null;
+        connection = null;
 
+    }
+    private boolean checkStructureQuery(String sql){
+        return QueriesParser.checkCreateDatabase(sql) || QueriesParser.checkDropDatabase(sql) || QueriesParser.checkCreateTable(sql) || QueriesParser.checkDropTable(sql);
+    }
+    private boolean checkUpdateQuery(String sql){
+        return QueriesParser.checkInsertInto(sql) || QueriesParser.checkDeleteFromTable(sql) || QueriesParser.checkUpdate(sql);
     }
     @Override
     public boolean execute(String sql) throws SQLException {
-        return false;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        if(checkStructureQuery(sql)){
+            try {
+                return databaseManager.executeStructureQuery(sql);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if(QueriesParser.checkExecuteQuery(sql)){
+            Object[][] table = databaseManager.executeQuery(sql);
+            Table schema = new Table(databaseManager.getCurrentTable());
+            List<Column> list = schema.getColumns();
+            HashMap<String, Integer> colToIndex = new HashMap<>();
+            HashMap<Integer, String> indexToType = new HashMap<>();
+            for(int i = 1; i < list.size(); i++){
+                colToIndex.put(list.get(i).getName(), i-1);
+                indexToType.put(i-1, list.get(i).getType());
+            }
+            resultSet = new DBResultset(schema.getName(), colToIndex, indexToType);
+            return table != null;
+
+        }else if(checkUpdateQuery(sql)){
+            currentResult = databaseManager.executeUpdateQuery(sql);
+            return false;
+        }
+        throw new SQLException("Syntax Error");
     }
     @Override
     public int[] executeBatch() throws SQLException {
-        return new int[0];
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        BatchUpdateException e = null;
+        int size = commands.size();
+        int[] updateCounts = new int[size];
+        for(int i = 0; i < size; i++){
+            String sql = commands.peek();
+            commands.poll();
+            if(checkStructureQuery(sql)){
+                try {
+                      databaseManager.executeStructureQuery(sql);
+                     updateCounts[i] = SUCCESS_NO_INFO;
+                } catch (IOException | SQLException ex) {
+                    updateCounts[i] = EXECUTE_FAILED;
+                    e = new BatchUpdateException(ex.getMessage(), updateCounts);
+                }
+            }else if(QueriesParser.checkExecuteQuery(sql)){
+                try {
+                    resultSet = executeQuery(sql);
+                } catch (SQLException ex) {
+                    updateCounts[i] = EXECUTE_FAILED;
+                    e = new BatchUpdateException(ex.getMessage(), updateCounts);
+                }
+            }else if(checkUpdateQuery(sql)){
+                try{
+                    currentResult = executeUpdate(sql);
+                    updateCounts[i] = currentResult;
+                }catch (SQLException ex){
+                    updateCounts[i] = EXECUTE_FAILED;
+                    e = new BatchUpdateException(ex.getMessage(), updateCounts);
+                }
+            }else{
+                updateCounts[i] = EXECUTE_FAILED;
+                e = new BatchUpdateException("Syntax Error", updateCounts);
+            }
+        }
+        if(e != null){
+            throw e;
+        }
+        return updateCounts;
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        return null;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        if(QueriesParser.checkExecuteQuery(sql)){
+            Object[][] table = databaseManager.executeQuery(sql);
+            Table schema = new Table(databaseManager.getCurrentTable());
+            List<Column> list = schema.getColumns();
+            Map<String, Integer> colToIndex = new HashMap<>();
+            Map<Integer, String> indexToType = new HashMap<>();
+            for(int i = 1; i < list.size(); i++){
+                colToIndex.put(list.get(i).getName(), i-1);
+                indexToType.put(i-1, list.get(i).getType());
+            }
+            resultSet = new DBResultset(schema.getName(), colToIndex, indexToType, table);
+            return resultSet;
+        }
+
+        throw new SQLException("Syntax Error");
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        return 0;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        if(QueriesParser.checkInsertInto(sql) || QueriesParser.checkDeleteFromTable(sql) || QueriesParser.checkUpdate(sql)){
+            currentResult = databaseManager.executeUpdateQuery(sql);
+            return currentResult;
+        }
+        throw new SQLException("Syntax Error");
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        return connection;
     }
     @Override
     public int getQueryTimeout() throws SQLException {
-        return 0;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        return timeout;
     }
 
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
-
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
+        }
+        timeout = seconds;
+    }
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        return resultSet;
+    }
+    @Override
+    public int getUpdateCount() throws SQLException {
+        return currentResult;
     }
 
     @Override
@@ -172,16 +323,6 @@ public class DBStatement implements java.sql.Statement{
 
     @Override
     public void setEscapeProcessing(boolean enable) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ResultSet getResultSet() throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int getUpdateCount() throws SQLException {
         throw new UnsupportedOperationException();
     }
 

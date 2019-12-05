@@ -31,7 +31,7 @@ public class DBConnection implements java.sql.Connection{
 
             throw ex;
         }
-        final Statement newStatement = new DBStatement();
+        final Statement newStatement = new DBStatement(connector, this);
         statements.add(newStatement);
         return newStatement;
     }

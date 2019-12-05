@@ -24,7 +24,7 @@ public class DBDriver implements java.sql.Driver{
         if (!acceptsURL(url))
             throw new SQLException("The url is invalid/unsupported!");
         if(!info.containsKey("path")){
-            throw new SQLException("There is no \"path\" key in info!")
+            throw new SQLException("There is no \"path\" key in info!");
         }
         this.path = info.get("path").toString();
         return new DBConnection(url, new File(path));
