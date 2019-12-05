@@ -83,7 +83,7 @@ public class DBStatement implements java.sql.Statement{
                 colToIndex.put(list.get(i).getName(), i-1);
                 indexToType.put(i-1, list.get(i).getType());
             }
-            resultSet = new DBResultset(schema.getName(), colToIndex, indexToType);
+            resultSet = new DBResultset(schema.getName(), colToIndex, indexToType, table);
             return table != null;
 
         }else if(checkUpdateQuery(sql)){
