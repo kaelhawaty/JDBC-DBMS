@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Table SYSTEM "table_name4.dtd">
+<Table name="table_name4">
+    <ID type="int">
+        <Record>0</Record>
+    </ID>
+    <column_name1 type="varchar">
+        <Record>'1111111111'</Record>
+    </column_name1>
+    <column_name2 type="int">
+        <Record>2222222</Record>
+    </column_name2>
+    <column_name3 type="varchar">
+        <Record>'333333333'</Record>
+    </column_name3>
+</Table>
