@@ -24,7 +24,6 @@ public class DBStatement implements java.sql.Statement{
         this.connection = connection;
         commands = new LinkedList<>();
         isClosed = false;
-        resultSet = new DBResultset();
         timeout = 100;
     }
     @Override

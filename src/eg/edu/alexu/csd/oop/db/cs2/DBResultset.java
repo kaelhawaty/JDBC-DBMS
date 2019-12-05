@@ -11,18 +11,22 @@ import java.util.Map;
 
 public class DBResultset implements java.sql.ResultSet{
     private String tableName;
-    private HashMap<String, Integer> columns;
+    private Map<String, Integer> columns;
     private int cursor;
     private DBResultSetMetaData metaData;
     private Object[][] data;
     private boolean close;
     private Statement statement;
-    public DBResultset(String tableName, HashMap<String, Integer> columns, HashMap<Integer, String> types, Object[][] data, Statement statement){
+    public DBResultset(String tableName, Map<String, Integer> columns, Map<Integer, String> types, Object[][] data, Statement statement){
         this.tableName = tableName;
         this.columns = columns;
         this.cursor = -1;
         this.data = data;
-        this.metaData = new DBResultset(tableName, columns, types);
+        try {
+            this.metaData = new DBResultSetMetaData(tableName, columns, types);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         close = false;
         this.statement =statement;
     }

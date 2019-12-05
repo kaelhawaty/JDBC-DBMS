@@ -11,11 +11,11 @@ import java.util.Map;
 
 public class DBResultSetMetaData implements ResultSetMetaData{
     private ArrayList<String> columnNames;
-    private HashMap<Integer, String> columnTypes ;
+    private Map<Integer, String> columnTypes ;
     private String tableName;
-    public DBResultSetMetaData(String table_name, HashMap<String,Integer> col_names, HashMap<Integer, String> column_Types) throws SQLException {
-         columnTypes = (HashMap)column_Types.clone();
-         tableName=table_name;
+    public DBResultSetMetaData(String table_name, Map<String,Integer> col_names, Map<Integer, String> column_Types) throws SQLException {
+         this.columnTypes = column_Types;
+         this.tableName=table_name;
          for(Map.Entry<String,Integer> entry:col_names.entrySet()){
              columnNames.add(entry.getKey());
          }
