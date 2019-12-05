@@ -6,114 +6,192 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DBResultset implements java.sql.ResultSet{
-
-
+    private String tableName;
+    private HashMap<String, Integer> columns;
+    private int cursor;
+    private DBResultSetMetaData metaData;
+    private Object[][] data;
+    private boolean close;
+    private Statement statement;
+    public DBResultset(String tableName, HashMap<String, Integer> columns, HashMap<Integer, String> types, Object[][] data, Statement statement){
+        this.tableName = tableName;
+        this.columns = columns;
+        this.cursor = -1;
+        this.data = data;
+        this.metaData = new DBResultset(tableName, columns, types);
+        close = false;
+        this.statement =statement;
+    }
+    private void checkIsClosed() throws SQLException {
+        if (close)
+            throw new SQLException();
+    }
     @Override
     public boolean next() throws SQLException {
-        return false;
+        checkIsClosed();
+        if(isAfterLast())
+            return false;
+        cursor++;
+        return true;
     }
 
     @Override
     public void close() throws SQLException {
-
+        cursor = -1;
+        tableName = null;
+        columns = null;
+        metaData = null;
+        close = true;
     }
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        return null;
+        checkIsClosed();
+        if (columnIndex <=  data[0].length && (data[cursor][columnIndex-1] instanceof String || data[cursor][columnIndex-1] == null)){
+            if(data[cursor][columnIndex-1] == null)
+                return "null";
+            return (String) data[cursor][columnIndex-1];
+        }
+        throw new SQLException();
     }
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
-        return 0;
+        checkIsClosed();
+        if (columnIndex <=  data[0].length && (data[cursor][columnIndex-1] instanceof Integer || data[cursor][columnIndex-1] == null)){
+            if(data[cursor][columnIndex-1] == null)
+                return 0;
+            return (Integer) data[cursor][columnIndex-1];
+        }
+        throw new SQLException();
     }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        return null;
+        if(!columns.containsValue(columnLabel))
+            throw new SQLException();
+        return getString(columns.get(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        return 0;
+        if(!columns.containsValue(columnLabel))
+            throw new SQLException();
+        return getInt(columns.get(columnLabel));
     }
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        return null;
+        checkIsClosed();
+        return metaData;
     }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
-        return null;
+        checkIsClosed();
+        if (columnIndex > data[0].length)
+            throw new SQLException();
+        return data[cursor][columnIndex-1];
     }
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        return 0;
+        if(!columns.containsValue(columnLabel))
+            throw new SQLException();
+        return columns.get(columnLabel);
     }
 
     @Override
     public boolean isBeforeFirst() throws SQLException {
-        return false;
+        checkIsClosed();
+        return cursor==-1;
     }
 
     @Override
     public boolean isAfterLast() throws SQLException {
-        return false;
+        checkIsClosed();
+        return cursor == data[0].length;
     }
 
     @Override
     public boolean isFirst() throws SQLException {
-        return false;
+        checkIsClosed();
+        return cursor == 0;
     }
 
     @Override
     public boolean isLast() throws SQLException {
-        return false;
+        checkIsClosed();
+        return cursor == data[0].length-1;
     }
 
     @Override
     public void beforeFirst() throws SQLException {
-
+        checkIsClosed();
+        cursor = -1;
     }
 
     @Override
     public void afterLast() throws SQLException {
-
+        checkIsClosed();
+        cursor = data[0].length;
     }
 
     @Override
     public boolean first() throws SQLException {
-        return false;
+        checkIsClosed();
+        if(data[0].length == 0)
+            return false;
+        cursor = 0;
+        return true;
     }
 
     @Override
     public boolean last() throws SQLException {
-        return false;
+        checkIsClosed();
+        if(data[0].length == 0)
+            return false;
+        cursor = data[0].length-1;
+        return true;
     }
 
     @Override
     public boolean absolute(int row) throws SQLException {
-        return false;
+        checkIsClosed();
+        int cur = cursor;
+        cursor = row;
+        if(row < 0){
+            cursor = data[0].length+row;
+        }
+        if (isAfterLast() || isBeforeFirst()){
+            cursor = cur;
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean previous() throws SQLException {
-        return false;
+        checkIsClosed();
+        if(isBeforeFirst())
+            return false;
+        cursor--;
+        return true;
     }
 
     @Override
     public Statement getStatement() throws SQLException {
-        return null;
+        checkIsClosed();
+        return statement;
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        return false;
+        return close;
     }
 
     @Override
