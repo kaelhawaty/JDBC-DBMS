@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE Table SYSTEM "table_name9.dtd">
-<Table name="table_name9">
-    <ID type="int"/>
-    <column_name1 type="varchar"/>
-    <column_name2 type="int"/>
-    <column_name3 type="varchar"/>
-</Table>
