@@ -25,13 +25,13 @@ public class DBConnection implements java.sql.Connection{
     public Statement createStatement() throws SQLException {
 
 
-        if (isClosed()) {
+        if (isClosed) {
             final SQLException ex
                     = new SQLException("Connection" + " is Closed");
 
             throw ex;
         }
-        final Statement newStatement = new DBStatement(connector, this);
+        final Statement newStatement = new DBStatement();
         statements.add(newStatement);
         return newStatement;
     }
