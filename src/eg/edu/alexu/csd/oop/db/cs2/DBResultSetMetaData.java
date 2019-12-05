@@ -29,27 +29,20 @@ public class DBResultSetMetaData implements ResultSetMetaData{
     private final int floattype = Types.FLOAT;
 
     public int convert_type(String type){
-        if(type=="int"){
+        if(type.equals("int")){
           return integertype;
         }
-        else if(type =="varchar"){
+        else if(type.equals("varchar")){
             return varchartype ;
         }
-        else if(type=="date"){
+        else if(type.equals("date")){
             return datetype;
         }
-        else if(type=="float"){
+        else if(type.equals("float")){
             return floattype;
         }
-        else return -1 ;
+        return -1;
     }
-
-    public DBResultSetMetaData() {
-        columnNames = new ArrayList<>();
-        columnTypes = new HashMap<>();
-        tableName = null;
-    }
-
     @Override
     public int getColumnCount() throws SQLException {
         return columnNames.size();

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DBResultset implements java.sql.ResultSet{
-    private String tableName;
     private Map<String, Integer> columns;
     private int cursor;
     private DBResultSetMetaData metaData;
@@ -18,7 +17,6 @@ public class DBResultset implements java.sql.ResultSet{
     private boolean close;
     private Statement statement;
     public DBResultset(String tableName, Map<String, Integer> columns, Map<Integer, String> types, Object[][] data, Statement statement){
-        this.tableName = tableName;
         this.columns = columns;
         this.cursor = -1;
         this.data = data;
@@ -46,7 +44,6 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public void close() throws SQLException {
         cursor = -1;
-        tableName = null;
         columns = null;
         metaData = null;
         close = true;
@@ -76,14 +73,14 @@ public class DBResultset implements java.sql.ResultSet{
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        if(!columns.containsValue(columnLabel))
+        if(!columns.containsValue(columnLabel.toLowerCase()))
             throw new SQLException();
         return getString(columns.get(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        if(!columns.containsValue(columnLabel))
+        if(!columns.containsValue(columnLabel.toLowerCase()))
             throw new SQLException();
         return getInt(columns.get(columnLabel));
     }
@@ -104,7 +101,7 @@ public class DBResultset implements java.sql.ResultSet{
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        if(!columns.containsValue(columnLabel))
+        if(!columns.containsValue(columnLabel.toLowerCase()))
             throw new SQLException();
         return columns.get(columnLabel);
     }
