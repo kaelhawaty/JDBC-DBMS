@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import eg.edu.alexu.csd.oop.test.TestRunner;
 import org.junit.Assert;
 import org.junit.Test;
 
+import eg.edu.alexu.csd.oop.TestRunner;
 
 
 public class SmokeTest {
@@ -18,9 +18,9 @@ public class SmokeTest {
     public static Class<?> getSpecifications(){
         return Driver.class;
     }
-    
+
     private Connection createDatabase(String databaseName, boolean drop) throws SQLException{
-        Driver driver = (Driver) TestRunner.getImplementationInstanceForInterface(Driver.class);
+        Driver driver = (Driver)TestRunner.getImplementationInstanceForInterface(Driver.class);
         Properties info = new Properties();
         File dbDir = new File("sample" + System.getProperty("file.separator") + ((int)(Math.random() * 100000)));
         info.put("path", dbDir.getAbsoluteFile());
@@ -32,7 +32,7 @@ public class SmokeTest {
         statement.close();
         return connection;
     }
-    
+
     @Test
     public void testCreateAndOpenAndDropDatabase() throws SQLException {
         Driver driver = (Driver)TestRunner.getImplementationInstanceForInterface(Driver.class);
@@ -49,7 +49,7 @@ public class SmokeTest {
             Assert.assertTrue("Database directory is not empty!", files == null || files.length == 0);
             statement.close();
         }
-        
+
         {
             Statement statement = connection.createStatement();
             statement.execute("DROP DATABASE SAMPLE");
@@ -168,7 +168,7 @@ public class SmokeTest {
         }
         connection.close();
     }
-    
+
     @Test
     public void testConditionalUpdate() throws SQLException {
         Connection connection = createDatabase("TestDB_Update", true);
@@ -213,7 +213,7 @@ public class SmokeTest {
         }
         connection.close();
     }
-    
+
     @Test
     public void testDelete() throws SQLException {
         Connection connection = createDatabase("TestDB_Update", true);
@@ -234,7 +234,7 @@ public class SmokeTest {
         }
         connection.close();
     }
-    
+
     @Test
     public void testConditionalDelete() throws SQLException {
         Connection connection = createDatabase("TestDB_Update", true);
@@ -282,7 +282,7 @@ public class SmokeTest {
         }
         connection.close();
     }
-    
+
     @Test
     public void testConditionalSelect() throws SQLException {
         Connection connection = createDatabase("TestDB_Select", true);
