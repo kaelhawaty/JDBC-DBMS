@@ -23,15 +23,10 @@ public class DBConnection implements java.sql.Connection{
 
     @Override
     public Statement createStatement() throws SQLException {
-
-
-        if (isClosed) {
-            final SQLException ex
-                    = new SQLException("Connection" + " is Closed");
-
-            throw ex;
+        if(isClosed){
+            throw new SQLException("This statement is already closed");
         }
-        final Statement newStatement = new DBStatement();
+        final Statement newStatement = new DBStatement(connector, this);
         statements.add(newStatement);
         return newStatement;
     }

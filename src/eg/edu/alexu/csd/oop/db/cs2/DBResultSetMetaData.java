@@ -1,33 +1,86 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
+import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DBResultSetMetaData implements ResultSetMetaData{
+    private ArrayList<String> columnNames;
+    private HashMap<Integer, String> columnTypes ;
+    private String tableName;
+    public DBResultSetMetaData(String table_name, HashMap<String,Integer> col_names, HashMap<Integer, String> column_Types) throws SQLException {
+         columnTypes = (HashMap)column_Types.clone();
+         tableName=table_name;
+         for(Map.Entry<String,Integer> entry:col_names.entrySet()){
+             columnNames.add(entry.getKey());
+         }
+
+    }
+    private final int integertype = Types.INTEGER;
+    private final int varchartype = Types.VARCHAR;
+    private final int datetype = Types.DATE;
+    private final int floattype = Types.FLOAT;
+
+    public int convert_type(String type){
+        if(type=="int"){
+          return integertype;
+        }
+        else if(type =="varchar"){
+            return varchartype ;
+        }
+        else if(type=="date"){
+            return datetype;
+        }
+        else if(type=="float"){
+            return floattype;
+        }
+        else return -1 ;
+    }
+
+    public DBResultSetMetaData() {
+        columnNames = new ArrayList<>();
+        columnTypes = new HashMap<>();
+        tableName = null;
+    }
 
     @Override
     public int getColumnCount() throws SQLException {
-        return 0;
+        return columnNames.size();
     }
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
+        if ( !(column >= 1 && column <= columnNames.size()))
         return null;
+
+        return columnNames.get(--column);
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return null;
+        if ( !(column >= 1 && column <= columnNames.size()))
+            return null;
+
+        return columnNames.get(--column);
     }
 
     @Override
     public String getTableName(int column) throws SQLException {
-        return null;
+        return tableName;
     }
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        return 0;
+        if ( !(column >= 1 && column <= columnNames.size())) {
+            throw new SQLException();
+        }
+
+        return convert_type(columnTypes.get(--column));
     }
     @Override
     public boolean isAutoIncrement(int column) throws SQLException {
