@@ -1,5 +1,6 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
@@ -7,8 +8,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public class DriverDB implements java.sql.Driver{
+public class DBDriver implements java.sql.Driver{
 
+    private String path;
     @Override
     public boolean acceptsURL(String url) throws SQLException {
         if(url == null)
@@ -21,11 +23,19 @@ public class DriverDB implements java.sql.Driver{
     public Connection connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url))
             throw new SQLException("The url is invalid/unsupported");
-        return new connectionDB(url, info.get("path").toString().toString());
+        this.path = info.get("path").toString();
+        return new DBConnection(url, new File(path));
     }
     @Override
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        return new DriverPropertyInfo[0];
+        DriverPropertyInfo[] propertyInfos = new DriverPropertyInfo[info.size()];
+        int i = 0;
+        for (Object object : info.keySet()){
+            propertyInfos[i].name = (String) object;
+            propertyInfos[i].value = (String) info.get(object);
+            i++;
+        }
+        return propertyInfos;
     }
 
     @Override

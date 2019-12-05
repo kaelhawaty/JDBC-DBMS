@@ -1,18 +1,51 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
+import eg.edu.alexu.csd.oop.db.cs2.controller.DatabaseManager;
+
+import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class connectionDB implements java.sql.Connection{
+public class DBConnection implements java.sql.Connection{
+    private final DatabaseManager connector;
+    private final ArrayList<Statement> statements;
+    private boolean isClosed;
+
+    public DBConnection(String url, File file) throws SQLException {
+
+        connector = new DatabaseManager(file);
+        statements = new ArrayList<>();
+        isClosed = false;
+    }
+
     @Override
     public Statement createStatement() throws SQLException {
-        return null;
+
+
+        if (isClosed()) {
+            final SQLException ex
+                    = new SQLException("Connection" + " is Closed");
+
+            throw ex;
+        }
+        final Statement newStatement = new DBStatement(connector, this);
+        statements.add(newStatement);
+        return newStatement;
     }
 
     @Override
     public void close() throws SQLException {
+
+        isClosed = true;
+        for (final Statement statement : statements) {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        statements.clear();
 
     }
     @Override

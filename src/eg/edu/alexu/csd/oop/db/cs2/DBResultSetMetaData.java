@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.oop.db.cs2;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class ResultSetMetaDataDB implements ResultSetMetaData{
+public class DBResultSetMetaData implements ResultSetMetaData{
 
     @Override
     public int getColumnCount() throws SQLException {

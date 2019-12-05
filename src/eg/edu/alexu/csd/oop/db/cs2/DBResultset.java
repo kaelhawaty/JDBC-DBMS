@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Map;
 
-public class ResultsetDB implements java.sql.ResultSet{
+public class DBResultset implements java.sql.ResultSet{
 
 
     @Override
