@@ -7,15 +7,17 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DBResultSetMetaData implements ResultSetMetaData{
-    private ArrayList<String> columnNames;
+    private List<String> columnNames;
     private Map<Integer, String> columnTypes ;
     private String tableName;
     public DBResultSetMetaData(String table_name, Map<String,Integer> col_names, Map<Integer, String> column_Types) throws SQLException {
          this.columnTypes = column_Types;
          this.tableName=table_name;
+         columnNames = new ArrayList<>();
          for(Map.Entry<String,Integer> entry:col_names.entrySet()){
              columnNames.add(entry.getKey());
          }
