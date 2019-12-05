@@ -26,7 +26,7 @@ public class DBResultset implements java.sql.ResultSet{
     }
     private void checkIsClosed() throws SQLException {
         if (close)
-            throw new SQLException();
+            throw new SQLException("Resultset is already closed!");
     }
     @Override
     public boolean next() throws SQLException {
@@ -53,7 +53,10 @@ public class DBResultset implements java.sql.ResultSet{
                 return "null";
             return (String) data[cursor][columnIndex-1];
         }
-        throw new SQLException();
+        if(columnIndex >  data[0].length) {
+            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
+        }
+        throw new SQLException("Can't cast this object at index " + columnIndex + " to String" );
     }
 
     @Override
@@ -64,20 +67,23 @@ public class DBResultset implements java.sql.ResultSet{
                 return 0;
             return (Integer) data[cursor][columnIndex-1];
         }
-        throw new SQLException();
+        if(columnIndex >  data[0].length) {
+            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
+        }
+        throw new SQLException("Can't cast this object at index " + columnIndex + " to Integer" );
     }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
         if(!columns.containsKey(columnLabel.toLowerCase()))
-            throw new SQLException();
+            throw new SQLException(columnLabel + " doesn't exist in Resultset");
         return getString(columns.get(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
         if(!columns.containsKey(columnLabel.toLowerCase()))
-            throw new SQLException();
+            throw new SQLException(columnLabel + " doesn't exist in Resultset");
         return getInt(columns.get(columnLabel));
     }
 
@@ -91,14 +97,14 @@ public class DBResultset implements java.sql.ResultSet{
     public Object getObject(int columnIndex) throws SQLException {
         checkIsClosed();
         if (columnIndex > data[0].length)
-            throw new SQLException();
+            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
         return data[cursor][columnIndex-1];
     }
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
         if(!columns.containsValue(columnLabel.toLowerCase()))
-            throw new SQLException();
+            throw new SQLException(columnLabel + " doesn't exist in Resultset");
         return columns.get(columnLabel);
     }
 
