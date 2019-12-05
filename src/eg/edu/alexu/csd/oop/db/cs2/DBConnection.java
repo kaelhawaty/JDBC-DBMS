@@ -36,7 +36,7 @@ public class DBConnection implements java.sql.Connection{
 
         isClosed = true;
         for (final Statement statement : statements) {
-            if (statement != null) {
+            if (!statement.isClosed()) {
                 statement.close();
             }
         }

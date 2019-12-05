@@ -48,7 +48,7 @@ public class DBStatement implements java.sql.Statement{
         isClosed = true;
         commands = null;
         databaseManager = null;
-        if(resultSet != null){
+        if(resultSet != null && !resultSet.isClosed()){
             resultSet.close();
         }
         resultSet = null;
@@ -200,6 +200,10 @@ public class DBStatement implements java.sql.Statement{
     public int getUpdateCount() throws SQLException {
         return currentResult;
     }
+    @Override
+    public boolean isClosed() throws SQLException {
+        return isClosed;
+    }
 
     @Override
     public boolean getMoreResults(int current) throws SQLException {
@@ -243,11 +247,6 @@ public class DBStatement implements java.sql.Statement{
 
     @Override
     public int getResultSetHoldability() throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isClosed() throws SQLException {
         throw new UnsupportedOperationException();
     }
 
