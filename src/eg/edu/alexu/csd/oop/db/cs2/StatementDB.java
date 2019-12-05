@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 
-public class StatementImplementation implements java.sql.Statement{
+public class StatementDB implements java.sql.Statement{
     @Override
     public void addBatch(String sql){
 

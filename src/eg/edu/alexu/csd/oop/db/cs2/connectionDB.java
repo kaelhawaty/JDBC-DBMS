@@ -5,20 +5,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ConnectoinImplementation implements java.sql.Connection{
+public class connectionDB implements java.sql.Connection{
     @Override
     public Statement createStatement() throws SQLException {
         return null;
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return null;
-    }
-
-    @Override
     public void close() throws SQLException {
 
+    }
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

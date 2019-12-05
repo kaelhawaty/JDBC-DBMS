@@ -7,18 +7,22 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public class DriverImplementation implements java.sql.Driver{
+public class DriverDB implements java.sql.Driver{
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        return false;
+        if(url == null)
+            return false;
+        String[] urlData = url.split(":");
+        return urlData.length == 3 && urlData[0].equalsIgnoreCase("jdbc") && urlData[1].equalsIgnoreCase("xmldb") && urlData[2].equalsIgnoreCase("//localhost");
     }
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return null;
+        if (!acceptsURL(url))
+            throw new SQLException("The url is invalid/unsupported");
+        return new connectionDB(url, info.get("path").toString().toString());
     }
-
     @Override
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
         return new DriverPropertyInfo[0];
