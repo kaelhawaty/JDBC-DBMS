@@ -22,19 +22,19 @@ public class DBDriver implements java.sql.Driver{
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url))
-            throw new SQLException("The url is invalid/unsupported");
+            throw new SQLException("The url is invalid/unsupported!");
+        if(!info.containsKey("path")){
+            throw new SQLException("There is no \"path\" key in info!")
+        }
         this.path = info.get("path").toString();
         return new DBConnection(url, new File(path));
     }
     @Override
     public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-        DriverPropertyInfo[] propertyInfos = new DriverPropertyInfo[info.size()];
-        int i = 0;
-        for (Object object : info.keySet()){
-            propertyInfos[i].name = (String) object;
-            propertyInfos[i].value = (String) info.get(object);
-            i++;
-        }
+        DriverPropertyInfo[] propertyInfos = new DriverPropertyInfo[1];
+        propertyInfos[0].name = "path";
+        propertyInfos[0].required = true;
+        propertyInfos[0].description = "File object representing main path file for the Database";
         return propertyInfos;
     }
 
