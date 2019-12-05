@@ -22,11 +22,7 @@ public class DBResultset implements java.sql.ResultSet{
         this.columns = columns;
         this.cursor = -1;
         this.data = data;
-        try {
-            this.metaData = new DBResultSetMetaData(tableName, columns, types);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.metaData = new DBResultSetMetaData(tableName, columns, types);
         close = false;
         this.statement =statement;
     }
@@ -37,7 +33,7 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public boolean next() throws SQLException {
         checkIsClosed();
-        if(isAfterLast())
+        if(isLast())
             return false;
         cursor++;
         return true;
@@ -76,14 +72,14 @@ public class DBResultset implements java.sql.ResultSet{
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        if(!columns.containsValue(columnLabel))
+        if(!columns.containsKey(columnLabel))
             throw new SQLException();
         return getString(columns.get(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        if(!columns.containsValue(columnLabel))
+        if(!columns.containsKey(columnLabel))
             throw new SQLException();
         return getInt(columns.get(columnLabel));
     }
@@ -118,7 +114,7 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public boolean isAfterLast() throws SQLException {
         checkIsClosed();
-        return cursor == data[0].length;
+        return cursor == data.length;
     }
 
     @Override
@@ -130,7 +126,7 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public boolean isLast() throws SQLException {
         checkIsClosed();
-        return cursor == data[0].length-1;
+        return cursor == data.length-1;
     }
 
     @Override
@@ -142,13 +138,13 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public void afterLast() throws SQLException {
         checkIsClosed();
-        cursor = data[0].length;
+        cursor = data.length;
     }
 
     @Override
     public boolean first() throws SQLException {
         checkIsClosed();
-        if(data[0].length == 0)
+        if(data.length == 0)
             return false;
         cursor = 0;
         return true;
@@ -157,9 +153,9 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public boolean last() throws SQLException {
         checkIsClosed();
-        if(data[0].length == 0)
+        if(data.length == 0)
             return false;
-        cursor = data[0].length-1;
+        cursor = data.length-1;
         return true;
     }
 
@@ -169,7 +165,7 @@ public class DBResultset implements java.sql.ResultSet{
         int cur = cursor;
         cursor = row;
         if(row < 0){
-            cursor = data[0].length+row;
+            cursor = data.length+row;
         }
         if (isAfterLast() || isBeforeFirst()){
             cursor = cur;

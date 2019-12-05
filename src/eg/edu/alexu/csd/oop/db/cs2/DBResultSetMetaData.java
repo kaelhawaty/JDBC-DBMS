@@ -14,7 +14,7 @@ public class DBResultSetMetaData implements ResultSetMetaData{
     private List<String> columnNames;
     private Map<Integer, String> columnTypes ;
     private String tableName;
-    public DBResultSetMetaData(String table_name, Map<String,Integer> col_names, Map<Integer, String> column_Types) throws SQLException {
+    public DBResultSetMetaData(String table_name, Map<String,Integer> col_names, Map<Integer, String> column_Types) {
          this.columnTypes = column_Types;
          this.tableName=table_name;
          columnNames = new ArrayList<>();
