@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.annotation.Target;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class DBStatement implements java.sql.Statement{
     private DatabaseManager databaseManager;
@@ -19,6 +20,8 @@ public class DBStatement implements java.sql.Statement{
     private ResultSet resultSet;
     private int currentResult;
     private int timeout;
+    ExecutorService executor;
+
     public DBStatement(DatabaseManager databaseManager, Connection connection){
         DBLogger.getInstance().getLogger().info("Statement has been created successfully");
         this.databaseManager = databaseManager;
@@ -26,6 +29,8 @@ public class DBStatement implements java.sql.Statement{
         commands = new LinkedList<>();
         isClosed = false;
         timeout = 100;
+        executor = Executors.newCachedThreadPool();
+
     }
     @Override
     public void addBatch(String sql) throws SQLException {
@@ -53,6 +58,7 @@ public class DBStatement implements java.sql.Statement{
         }
         isClosed = true;
         commands = null;
+        executor = null;
         databaseManager = null;
         if(resultSet != null && !resultSet.isClosed()){
             resultSet.close();
@@ -69,7 +75,86 @@ public class DBStatement implements java.sql.Statement{
         return QueriesParser.checkInsertInto(sql) || QueriesParser.checkDeleteFromTable(sql) || QueriesParser.checkUpdate(sql);
     }
     @Override
-    public boolean execute(String sql) throws SQLException {
+    public boolean execute(String sql) throws SQLException{
+        Callable<Boolean> task = () -> executeTime(sql);
+        Future<Boolean> future = executor.submit(task);
+        try {
+            Boolean result = future.get(getQueryTimeout(), TimeUnit.SECONDS);
+            return result;
+        } catch (TimeoutException ex) {
+            DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql + " Reason: Time Limit Exceeded");
+            throw new SQLException("Time Limit Exceeded", ex.getCause());
+            // handle the timeout
+        } catch (InterruptedException e) {
+            // handle the interrupts
+        } catch (ExecutionException e) {
+            // handle other exceptions
+            throw new SQLException(e.getMessage(), e.getCause());
+        } finally{
+            future.cancel(true); // may or may not desire this
+        }
+        return false;
+    }
+    @Override
+    public int[] executeBatch() throws SQLException {
+        Callable<Integer[]> task = () -> Arrays.stream(executeBatchTime()).boxed().toArray( Integer[]::new );
+        Future<Integer[]> future = executor.submit(task);
+        try {
+            Integer[] result = future.get(getQueryTimeout(), TimeUnit.SECONDS);
+            return Arrays.stream(result).mapToInt(Integer::intValue).toArray();
+        } catch (TimeoutException ex) {
+            DBLogger.getInstance().getLogger().info("Failed to execute Batch Reason: Time Limit Exceeded");
+            throw new SQLException("Time Limit Exceeded", ex.getCause());
+            // handle the timeout
+        } catch (InterruptedException e) {
+            // handle the interrupts
+        } catch (ExecutionException e) {
+            // handle other exceptions
+            throw new SQLException(e.getMessage(), e.getCause());
+        } finally{
+            future.cancel(true); // may or may not desire this
+        }
+        return null;
+    }
+    public ResultSet executeQuery(String sql) throws SQLException{
+        Callable<ResultSet> task = () -> executeQueryTime(sql);
+        Future<ResultSet> future = executor.submit(task);
+        try {
+            return future.get(getQueryTimeout(), TimeUnit.SECONDS);
+        } catch (TimeoutException ex) {
+            DBLogger.getInstance().getLogger().info("Failed to execute Batch Reason: Time Limit Exceeded");
+            throw new SQLException("Time Limit Exceeded", ex.getCause());
+            // handle the timeout
+        } catch (InterruptedException e) {
+            // handle the interrupts
+        } catch (ExecutionException e) {
+            // handle other exceptions
+            throw new SQLException(e.getMessage(), e.getCause());
+        } finally{
+            future.cancel(true); // may or may not desire this
+        }
+        return null;
+    }
+    public int executeUpdate(String sql) throws SQLException{
+        Callable<Integer> task = () -> executeUpdateTime(sql);
+        Future<Integer> future = executor.submit(task);
+        try {
+            return future.get(getQueryTimeout(), TimeUnit.SECONDS).intValue();
+        } catch (TimeoutException ex) {
+            DBLogger.getInstance().getLogger().info("Failed to execute Batch Reason: Time Limit Exceeded");
+            throw new SQLException("Time Limit Exceeded", ex.getCause());
+            // handle the timeout
+        } catch (InterruptedException e) {
+            // handle the interrupts
+        } catch (ExecutionException e) {
+            // handle other exceptions
+            throw new SQLException(e.getMessage(), e.getCause());
+        } finally{
+            future.cancel(true); // may or may not desire this
+        }
+        return -1;
+    }
+    public boolean executeTime(String sql) throws SQLException, InterruptedException {
         if(isClosed){
             DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
             throw new SQLException("This statement is already closed");
@@ -127,8 +212,7 @@ public class DBStatement implements java.sql.Statement{
         DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql + " Reason: Wrong Syntax");
         throw new SQLException("Syntax Error");
     }
-    @Override
-    public int[] executeBatch() throws SQLException {
+    public int[] executeBatchTime() throws SQLException {
         if(isClosed){
             DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
             throw new SQLException("This statement is already closed");
@@ -184,8 +268,7 @@ public class DBStatement implements java.sql.Statement{
         return updateCounts;
     }
 
-    @Override
-    public ResultSet executeQuery(String sql) throws SQLException {
+    public ResultSet executeQueryTime(String sql) throws SQLException {
         if(isClosed){
             DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
             throw new SQLException("This statement is already closed");
@@ -238,8 +321,7 @@ public class DBStatement implements java.sql.Statement{
         return set;
     }
 
-    @Override
-    public int executeUpdate(String sql) throws SQLException {
+    public int executeUpdateTime(String sql) throws SQLException {
         if(isClosed){
             DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
             throw new SQLException("This statement is already closed");

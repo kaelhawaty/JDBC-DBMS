@@ -1,0 +1,18 @@
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
+INFO: DBDriver has been created successfully!
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+INFO: URL Accepted: jdbc:xmldb://localhost
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+INFO: Connection has been created successfully!
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+INFO: Statement has been created successfully
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: DROP DATABASE testDB
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: CREATE DATABASE testDB
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement close
+INFO: Statement has been closed successfully
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+INFO: Statement has been created successfully
+Dec 06, 2019 4:10:56 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement execute
+INFO: Failed to execute SQL command: CREATE   TABLE   table_name1(column_name1 varchar , column_name2    int,  column_name3 varchar) Reason: Time Limit Exceeded

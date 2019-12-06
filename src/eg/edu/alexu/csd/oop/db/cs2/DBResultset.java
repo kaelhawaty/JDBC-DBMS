@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class DBResultset implements java.sql.ResultSet{
     private Map<String, Integer> columns;
+    private Map<Integer, String> types;
     private int cursor;
     private DBResultSetMetaData metaData;
     private Object[][] data;
@@ -21,6 +22,7 @@ public class DBResultset implements java.sql.ResultSet{
         this.cursor = -1;
         this.data = data;
         this.metaData = new DBResultSetMetaData(tableName, columns, types);
+        this.types = types;
         close = false;
         this.statement =statement;
     }
@@ -48,13 +50,16 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public String getString(int columnIndex) throws SQLException {
         checkIsClosed();
-        if (columnIndex <=  data[0].length && (data[cursor][columnIndex-1] instanceof String || data[cursor][columnIndex-1] == null)){
+        if(data.length == 0){
+            throw new SQLException("Result set is Empty");
+        }
+        if( 1 > columnIndex || columnIndex >  data[0].length){
+            throw new SQLException("columnIndex out of bounds given " + columnIndex + " min " + 1 + " max " + data[0].length);
+        }
+        if (data[cursor][columnIndex-1] instanceof String || data[cursor][columnIndex-1] == null && types.get(columnIndex-1).equalsIgnoreCase("varchar")){
             if(data[cursor][columnIndex-1] == null)
                 return "null";
             return (String) data[cursor][columnIndex-1];
-        }
-        if(columnIndex >  data[0].length) {
-            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
         }
         throw new SQLException("Can't cast this object at index " + columnIndex + " to String" );
     }
@@ -62,30 +67,77 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public int getInt(int columnIndex) throws SQLException {
         checkIsClosed();
-        if (columnIndex <=  data[0].length && (data[cursor][columnIndex-1] instanceof Integer || data[cursor][columnIndex-1] == null)){
+        if(data.length == 0){
+            throw new SQLException("Result set is Empty");
+        }
+        if( 1 > columnIndex || columnIndex >  data[0].length){
+            throw new SQLException("columnIndex out of bounds given " + columnIndex + " min " + 1 + " max " + data[0].length);
+        }
+        if (data[cursor][columnIndex-1] instanceof Integer || data[cursor][columnIndex-1] == null && types.get(columnIndex-1).equalsIgnoreCase("int")){
             if(data[cursor][columnIndex-1] == null)
                 return 0;
             return (Integer) data[cursor][columnIndex-1];
         }
-        if(columnIndex >  data[0].length) {
-            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
-        }
         throw new SQLException("Can't cast this object at index " + columnIndex + " to Integer" );
+    }
+    @Override
+    public float getFloat(int columnIndex) throws SQLException {
+        checkIsClosed();
+        if(data.length == 0){
+            throw new SQLException("Result set is Empty");
+        }
+        if( 1 > columnIndex || columnIndex >  data[0].length){
+            throw new SQLException("columnIndex out of bounds given " + columnIndex + " min " + 1 + " max " + data[0].length);
+        }
+        if (data[cursor][columnIndex-1] instanceof Float || data[cursor][columnIndex-1] == null && types.get(columnIndex-1).equalsIgnoreCase("float")){
+            if(data[cursor][columnIndex-1] == null)
+                return 0;
+            return (Float) data[cursor][columnIndex-1];
+        }
+        throw new SQLException("Can't cast this object at index " + columnIndex + " to Float" );
+    }
+    @Override
+    public Date getDate(int columnIndex) throws SQLException {
+        if(data.length == 0){
+            throw new SQLException("Result set is Empty");
+        }
+        if( 1 > columnIndex || columnIndex >  data[0].length){
+            throw new SQLException("columnIndex out of bounds given " + columnIndex + " min " + 1 + " max " + data[0].length);
+        }
+        if (data[cursor][columnIndex-1] instanceof Date || data[cursor][columnIndex-1] == null && types.get(columnIndex-1).equalsIgnoreCase("date")){
+            if(data[cursor][columnIndex-1] == null)
+                return null;
+            return (Date) data[cursor][columnIndex-1];
+        }
+        throw new SQLException("Can't cast this object at index " + columnIndex + " to Date" );
     }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
         if(!columns.containsKey(columnLabel.toLowerCase()))
             throw new SQLException(columnLabel + " doesn't exist in Resultset");
-        return getString(columns.get(columnLabel));
+        return getString(columns.get(columnLabel)+1);
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
         if(!columns.containsKey(columnLabel.toLowerCase()))
             throw new SQLException(columnLabel + " doesn't exist in Resultset");
-        return getInt(columns.get(columnLabel));
+        return getInt(columns.get(columnLabel)+1);
     }
+    @Override
+    public float getFloat(String columnLabel) throws SQLException {
+        if(!columns.containsKey(columnLabel.toLowerCase()))
+            throw new SQLException(columnLabel + " doesn't exist in Resultset");
+        return getFloat(columns.get(columnLabel)+1);
+    }
+    @Override
+    public Date getDate(String columnLabel) throws SQLException {
+        if(!columns.containsKey(columnLabel.toLowerCase()))
+            throw new SQLException(columnLabel + " doesn't exist in Resultset");
+        return getDate(columns.get(columnLabel)+1);
+    }
+
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
@@ -96,8 +148,15 @@ public class DBResultset implements java.sql.ResultSet{
     @Override
     public Object getObject(int columnIndex) throws SQLException {
         checkIsClosed();
-        if (columnIndex > data[0].length)
-            throw new SQLException("columnIndex is out of bounds given " + columnIndex + " max " + data[0].length);
+        if(data.length == 0){
+            throw new SQLException("Result set is Empty");
+        }
+        if( 1 > columnIndex || columnIndex >  data[0].length){
+            throw new SQLException("columnIndex out of bounds given " + columnIndex + " min " + 1 + " max " + data[0].length);
+        }
+        if(isBeforeFirst() || isAfterLast()){
+            throw new SQLException("You aren't currently on an correct row!");
+        }
         return data[cursor][columnIndex-1];
     }
 
@@ -105,7 +164,7 @@ public class DBResultset implements java.sql.ResultSet{
     public int findColumn(String columnLabel) throws SQLException {
         if(!columns.containsValue(columnLabel.toLowerCase()))
             throw new SQLException(columnLabel + " doesn't exist in Resultset");
-        return columns.get(columnLabel);
+        return columns.get(columnLabel)+1;
     }
 
     @Override
@@ -223,11 +282,6 @@ public class DBResultset implements java.sql.ResultSet{
     }
 
     @Override
-    public float getFloat(int columnIndex) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public double getDouble(int columnIndex) throws SQLException {
         throw new UnsupportedOperationException();
     }
@@ -239,11 +293,6 @@ public class DBResultset implements java.sql.ResultSet{
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Date getDate(int columnIndex) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
@@ -293,11 +342,6 @@ public class DBResultset implements java.sql.ResultSet{
     }
 
     @Override
-    public float getFloat(String columnLabel) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public double getDouble(String columnLabel) throws SQLException {
         throw new UnsupportedOperationException();
     }
@@ -309,11 +353,6 @@ public class DBResultset implements java.sql.ResultSet{
 
     @Override
     public byte[] getBytes(String columnLabel) throws SQLException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Date getDate(String columnLabel) throws SQLException {
         throw new UnsupportedOperationException();
     }
 
