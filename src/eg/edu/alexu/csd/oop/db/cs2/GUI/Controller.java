@@ -2,14 +2,19 @@ package eg.edu.alexu.csd.oop.db.cs2.GUI;
 
 import eg.edu.alexu.csd.oop.db.cs2.DBDriver;
 import eg.edu.alexu.csd.oop.db.cs2.DBLogger;
+import eg.edu.alexu.csd.oop.db.cs2.structures.Column;
+import eg.edu.alexu.csd.oop.db.cs2.structures.Table;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Properties;
+import java.util.*;
+import java.util.List;
 
 public class Controller {
     private Driver driver;
@@ -94,6 +99,31 @@ public class Controller {
         }
     }
     public void updateTableArea(JTable table, ResultSet resultSet){
+        List<String> columnNames = new ArrayList<>();
+        int numOfColumns = 1;
+        try {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            while (metaData.getColumnName(numOfColumns) != null){
+                columnNames.add(metaData.getColumnName(numOfColumns++));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        DefaultTableModel tableModel = new DefaultTableModel();
+        for (int i = 0; i < numOfColumns-1; ++i){
+            tableModel.addColumn(columnNames.get(i));
+        }
+        try {
+            while(resultSet.next()){
+                Object[] rowData = new Object[numOfColumns-1];
+                for(int i = 1; i < numOfColumns; ++i)
+                    rowData[i-1] = resultSet.getObject(i);
+                tableModel.addRow(rowData);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        table.setModel(tableModel);
 
     }
 }

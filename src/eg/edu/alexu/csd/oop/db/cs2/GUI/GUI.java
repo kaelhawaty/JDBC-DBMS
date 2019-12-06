@@ -97,6 +97,7 @@ public class GUI extends JFrame {
         loggerScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Logger", null, loggerScroll, null);
         table = new JTable();
+        table.setEnabled(false);
         tableScroll = new JScrollPane(table);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Table", null, tableScroll, null);
