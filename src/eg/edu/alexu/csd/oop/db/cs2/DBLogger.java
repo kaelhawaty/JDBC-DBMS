@@ -27,6 +27,6 @@ public class DBLogger {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.setLevel(Level.INFO);
+        logger.setLevel(Level.ALL);
     }
 }
