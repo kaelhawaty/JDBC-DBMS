@@ -50,8 +50,9 @@ public class DBResultSetMetaData implements ResultSetMetaData{
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        if ( !(column >= 1 && column <= columnNames.size()))
-        return null;
+        if ( !(column >= 1 && column <= columnNames.size())) {
+            throw new SQLException("columnIndex out of bounds given " + column + " min " + 1 + " max " + columnNames.size());
+        }
 
         return columnNames.get(--column);
     }
@@ -59,7 +60,7 @@ public class DBResultSetMetaData implements ResultSetMetaData{
     @Override
     public String getColumnName(int column) throws SQLException {
         if ( !(column >= 1 && column <= columnNames.size()))
-            return null;
+            throw new SQLException("columnIndex out of bounds given " + column + " min " + 1 + " max " + columnNames.size());
 
         return columnNames.get(--column);
     }
@@ -72,7 +73,7 @@ public class DBResultSetMetaData implements ResultSetMetaData{
     @Override
     public int getColumnType(int column) throws SQLException {
         if ( !(column >= 1 && column <= columnNames.size())) {
-            throw new SQLException();
+            throw new SQLException("columnIndex out of bounds given " + column + " min " + 1 + " max " + columnNames.size());
         }
 
         return convert_type(columnTypes.get(--column));
