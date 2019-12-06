@@ -302,7 +302,7 @@ public class DBStatement implements java.sql.Statement{
         DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql + " Reason: Wrong Syntax");
         throw new SQLException("Syntax Error");
     }
-    public Set<String> parseQuery(String query, List<Column> list){
+    private Set<String> parseQuery(String query, List<Column> list){
         Set<String> set = new HashSet<>();
         query = query.toLowerCase();
         query = query.replaceAll("\\s*select\\s*", "");
