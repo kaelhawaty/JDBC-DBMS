@@ -5,6 +5,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.sql.SQLException;
 
 public class GUI extends JFrame {
 
@@ -13,7 +15,9 @@ public class GUI extends JFrame {
     private JTextField textField;
     private JTabbedPane tabbedPane;
     private JButton executeButton, pathButton;
-
+    private JScrollPane pathScroll, statusScroll, tableScroll, loggerScroll;
+    private String currentPath = new File("").getAbsolutePath();
+    private Controller controller;
     /**
      * Launch the application.
      */
@@ -37,14 +41,29 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(0, 0, 1000, 1000);
         setTitle("JDBC");
+        controller = new Controller(currentPath);
         ActionListener buttonListeners = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource().equals(pathLabel)){
+                if (e.getSource().equals(pathButton)){
                     JFileChooser fileChooser = new JFileChooser();
-
+                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    int r = fileChooser.showDialog(null, "Select");
+                    if(r == JFileChooser.APPROVE_OPTION){
+                        currentPath = fileChooser.getSelectedFile().getAbsolutePath();
+                        pathLabel.setText(currentPath);
+                        controller.setConnection(currentPath);
+                    }
                 }else{
-                    return;
+                    String query = textField.getText().replaceAll("^\\s+", "");
+                    if(query == null || query.length() == 0)
+                        JOptionPane.showMessageDialog(getContentPane(), "The query is empty, Please enter your SQL statement");
+                    else
+                        try {
+                            controller.execute(tabbedPane.getComponents(), query);
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
                 }
             }
         };
@@ -62,17 +81,25 @@ public class GUI extends JFrame {
         pathLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 
         executeButton = new JButton("Execute");
-
+        executeButton.addActionListener(buttonListeners);
         pathButton = new JButton("PATH");
+        pathButton.addActionListener(buttonListeners);
         GroupLayout groupLayout = initializeLayout();
         JTextArea statusArea = new JTextArea();
-        tabbedPane.addTab("Status", null, statusArea, null);
+        statusArea.setEditable(false);
+        statusScroll = new JScrollPane(statusArea);
+        statusScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tabbedPane.addTab("Status", null, statusScroll, null);
 
-        JTextArea loggerArea = new JTextArea();
-        tabbedPane.addTab("Logger", null, loggerArea, null);
-
+        JTextArea loggerArea = new JTextArea(5, 20);
+        loggerArea.setEditable(false);
+        loggerScroll = new JScrollPane(loggerArea);
+        loggerScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tabbedPane.addTab("Logger", null, loggerScroll, null);
         table = new JTable();
-        tabbedPane.addTab("Table", null, table, null);
+        tableScroll = new JScrollPane(table);
+        tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tabbedPane.addTab("Table", null, tableScroll, null);
         getContentPane().setLayout(groupLayout);
     }
     private GroupLayout initializeLayout(){

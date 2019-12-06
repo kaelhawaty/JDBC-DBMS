@@ -1,144 +1,66 @@
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
+ديس 06, 2019 4:39:26 م eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
 INFO: DBDriver has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+ديس 06, 2019 4:39:26 م eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
 INFO: URL Accepted: jdbc:xmldb://localhost
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+ديس 06, 2019 4:39:26 م eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
 INFO: Connection has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:39:38 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: DROP DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement close
-INFO: Statement has been closed successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:39:38 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create database dddd
+ديس 06, 2019 4:39:54 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE   TABLE   ptats ( fruit varchar ,  type int)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Apple', 1)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Tomato', 2)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Banana', 2)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Orange', 1)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: Select * from ptats where type=2 order by fruit desc
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
-INFO: DBDriver has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
-INFO: URL Accepted: jdbc:xmldb://localhost
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
-INFO: Connection has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:39:54 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create table test(name varchar, age int)
+ديس 06, 2019 4:40:06 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: DROP DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement close
-INFO: Statement has been closed successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:40:06 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: Failed to execute SQL command: create table test (name varchar, age int)
+ديس 06, 2019 4:40:37 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE   TABLE   ptats ( name varchar ,  age int)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Kareem', 19)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:40:37 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:37 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Hazem', 20)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('3frto', 21)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Kareem', 20)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: Select * from ptats order by name asc, age desc
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
-INFO: DBDriver has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
-INFO: URL Accepted: jdbc:xmldb://localhost
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
-INFO: Connection has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:40:49 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: DROP DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement close
-INFO: Statement has been closed successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:40:49 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:49 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE   TABLE   ptats ( integer int ,  float float)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES (5, 5.32453 )
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES (6 , 6.732455646543)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES (5, -7.23132453)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES (6, 6.5353453)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: Select integer, float from ptats order by integer desc, float asc
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
-INFO: DBDriver has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
-INFO: URL Accepted: jdbc:xmldb://localhost
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
-INFO: Connection has been created successfully!
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: DROP DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE DATABASE testDB
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement close
-INFO: Statement has been closed successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:51 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: CREATE   TABLE   ptats ( name varchar ,  birth date, IQ int)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Hazem', 10/11/1999, -1)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Hazem', 10/11/2000, -2)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+INFO: Statement has been created successfully
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:52 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Hazem', 11/11/1999, -3)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:40:53 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+INFO: Statement has been created successfully
+ديس 06, 2019 4:40:53 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:40:53 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: INSERT INTO ptats VALUES ('Kareem', 10/11/1999, -900)
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+ديس 06, 2019 4:41:14 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+INFO: Statement has been created successfully
+ديس 06, 2019 4:41:14 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20)
+ديس 06, 2019 4:41:14 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-Dec 06, 2019 4:39:48 AM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: Select name, birth from ptats where iq<0 order by name asc, birth asc
