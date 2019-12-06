@@ -42,12 +42,12 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource().equals(pathLabel)){
                     JFileChooser fileChooser = new JFileChooser();
-                    
-                }else{
 
+                }else{
+                    return;
                 }
             }
-        }
+        };
         titleLabel = new JLabel("JDBC Project");
         titleLabel.setFont(new Font("Tahoma", Font.BOLD, 35));
         titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

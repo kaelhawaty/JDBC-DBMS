@@ -15,7 +15,7 @@ public class DBConnection implements java.sql.Connection{
     private boolean isClosed;
 
     public DBConnection(String url, File file) throws SQLException {
-
+        DBLogger.getInstance().getLogger().info("Connection has been created successfully!");
         connector = new DatabaseManager(file);
         statements = new ArrayList<>();
         isClosed = false;
@@ -24,6 +24,7 @@ public class DBConnection implements java.sql.Connection{
     @Override
     public Statement createStatement() throws SQLException {
         if(isClosed){
+            DBLogger.getInstance().getLogger().info("Failed to executed close: Connection is already closed");
             throw new SQLException("This statement is already closed");
         }
         final Statement newStatement = new DBStatement(connector, this);
@@ -33,7 +34,10 @@ public class DBConnection implements java.sql.Connection{
 
     @Override
     public void close() throws SQLException {
-
+        if(isClosed){
+            DBLogger.getInstance().getLogger().info("Failed to executed close: Connection is already closed");
+            throw new SQLException("This statement is already closed");
+        }
         isClosed = true;
         for (final Statement statement : statements) {
             if (!statement.isClosed()) {
@@ -41,6 +45,7 @@ public class DBConnection implements java.sql.Connection{
             }
         }
         statements.clear();
+        DBLogger.getInstance().getLogger().info("Connection has been closed successfully");
 
     }
     @Override

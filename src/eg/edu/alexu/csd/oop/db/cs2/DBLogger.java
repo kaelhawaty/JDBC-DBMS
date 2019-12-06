@@ -1,14 +1,11 @@
 package eg.edu.alexu.csd.oop.db.cs2;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.util.logging.*;
 
 public class DBLogger {
     private static DBLogger instance;
-    private final static Logger logger = Logger.getLogger(DBLogger.getInstance().toString());
+    private final static Logger logger = Logger.getLogger("GLOBAL");
     public static DBLogger getInstance(){
         if (instance == null)
             instance = new DBLogger();
@@ -19,6 +16,11 @@ public class DBLogger {
     }
     private DBLogger(){
         try {
+            Logger rootLogger = Logger.getLogger("");
+            Handler[] handlers = rootLogger.getHandlers();
+            if (handlers[0] instanceof ConsoleHandler) {
+                rootLogger.removeHandler(handlers[0]);
+            }
             FileHandler fh = new FileHandler("log.txt");
             fh.setFormatter(new SimpleFormatter());
             logger.addHandler(fh);

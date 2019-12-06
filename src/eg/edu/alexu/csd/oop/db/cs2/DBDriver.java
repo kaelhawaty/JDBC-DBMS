@@ -11,13 +11,23 @@ import java.util.logging.Logger;
 public class DBDriver implements java.sql.Driver{
 
     private String path;
+    public DBDriver(){
+        DBLogger.getInstance().getLogger().info("DBDriver has been created successfully!");
+    }
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        if(url == null)
+        if(url == null) {
+            DBLogger.getInstance().getLogger().info("URL has been rejected: " + url);
             return false;
+        }
         String[] urlData = url.split(":");
-        DBLogger.getInstance().getLogger().info("url Accepted: "+url);
-        return urlData.length == 3 && urlData[0].equalsIgnoreCase("jdbc") && urlData[1].equalsIgnoreCase("xmldb") && urlData[2].equalsIgnoreCase("//localhost");
+        boolean result = urlData.length == 3 && urlData[0].equalsIgnoreCase("jdbc") && urlData[1].equalsIgnoreCase("xmldb") && urlData[2].equalsIgnoreCase("//localhost");
+        if(result){
+            DBLogger.getInstance().getLogger().info("URL Accepted: "+url);
+            return true;
+        }
+        DBLogger.getInstance().getLogger().info("URL has been rejected: "+url);
+        return false;
     }
 
     @Override
@@ -25,6 +35,7 @@ public class DBDriver implements java.sql.Driver{
         if (!acceptsURL(url))
             throw new SQLException("The url is invalid/unsupported!");
         if(!info.containsKey("path")){
+            DBLogger.getInstance().getLogger().info("Creation of connection has failed: Missing \"Path\" in info");
             throw new SQLException("There is no \"path\" key in info!");
         }
         this.path = info.get("path").toString();
