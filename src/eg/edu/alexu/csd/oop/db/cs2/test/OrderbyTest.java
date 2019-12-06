@@ -48,6 +48,7 @@ public class OrderbyTest {
                     Assert.assertEquals("Expected Object is wrong found: " + actual + " Expected: "+  expected[i][j], expected[i][j], actual );
                 }
             }
+            Assert.assertFalse("Wrong table selection", ans.next());
         } catch (SQLException e) {
             Assert.fail(e.getMessage());
         }
@@ -75,6 +76,7 @@ public class OrderbyTest {
                     Assert.assertEquals("Expected Object is wrong found: " + actual + " Expected: "+  expected[i][j], expected[i][j], actual );
                 }
             }
+            Assert.assertFalse("Wrong table selection", ans.next());
         } catch (SQLException e) {
             Assert.fail(e.getMessage());
         }
@@ -107,6 +109,7 @@ public class OrderbyTest {
                     Assert.assertEquals("Expected Object is wrong found: " + actual + " Expected: "+  expected[i][j], expected[i][j], actual );
                 }
             }
+            Assert.assertFalse("Wrong table selection", ans.next());
         } catch (SQLException e) {
             Assert.fail(e.getMessage());
         }
@@ -139,6 +142,7 @@ public class OrderbyTest {
                     Assert.assertEquals("Expected Object is wrong found: " + actual + " Expected: "+  expected[i][j], expected[i][j], actual );
                 }
             }
+            Assert.assertFalse("Wrong table selection", ans.next());
         } catch (SQLException e) {
             Assert.fail(e.getMessage());
         }
