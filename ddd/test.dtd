@@ -1,0 +1,34 @@
+<!ELEMENT Table (ID,name,age,birth,gpa)>
+<!ATTLIST Table
+  xmlns CDATA #FIXED ''
+  name NMTOKEN #REQUIRED>
+
+<!ELEMENT ID (Record,Record,Record,Record,Record)>
+<!ATTLIST ID
+  xmlns CDATA #FIXED ''
+  type NMTOKEN #REQUIRED>
+
+<!ELEMENT name (Record,Record,Record,Record,Record)>
+<!ATTLIST name
+  xmlns CDATA #FIXED ''
+  type NMTOKEN #REQUIRED>
+
+<!ELEMENT age (Record,Record,Record,Record,Record)>
+<!ATTLIST age
+  xmlns CDATA #FIXED ''
+  type NMTOKEN #REQUIRED>
+
+<!ELEMENT birth (Record,Record,Record,Record,Record)>
+<!ATTLIST birth
+  xmlns CDATA #FIXED ''
+  type NMTOKEN #REQUIRED>
+
+<!ELEMENT gpa (Record,Record,Record,Record,Record)>
+<!ATTLIST gpa
+  xmlns CDATA #FIXED ''
+  type NMTOKEN #REQUIRED>
+
+<!ELEMENT Record (#PCDATA)>
+<!ATTLIST Record
+  xmlns CDATA #FIXED ''>
+

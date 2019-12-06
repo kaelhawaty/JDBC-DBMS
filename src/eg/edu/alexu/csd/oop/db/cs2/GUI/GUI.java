@@ -41,7 +41,21 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(0, 0, 1000, 1000);
         setTitle("JDBC");
-        controller = new Controller(currentPath);
+        titleLabel = new JLabel("JDBC Project");
+        titleLabel.setFont(new Font("Tahoma", Font.BOLD, 35));
+        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titleLabel.setBounds(12, 13, 259, 86);
+
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+
+        textField = new JTextField();
+        textField.setColumns(10);
+
+        pathLabel = new JLabel("Current Path");
+        pathLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
+
+        executeButton = new JButton("Execute");
+        pathButton = new JButton("PATH");
         ActionListener buttonListeners = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,32 +72,14 @@ public class GUI extends JFrame {
                     String query = textField.getText().replaceAll("^\\s+", "");
                     if(query == null || query.length() == 0)
                         JOptionPane.showMessageDialog(getContentPane(), "The query is empty, Please enter your SQL statement");
-                    else
-                        try {
-                            controller.execute(tabbedPane.getComponents(), query);
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
+                    else {
+                        controller.execute(query);
+                    }
                 }
             }
         };
-        titleLabel = new JLabel("JDBC Project");
-        titleLabel.setFont(new Font("Tahoma", Font.BOLD, 35));
-        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titleLabel.setBounds(12, 13, 259, 86);
-
-        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-
-        textField = new JTextField();
-        textField.setColumns(10);
-
-        pathLabel = new JLabel("Current Path");
-        pathLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
-
-        executeButton = new JButton("Execute");
-        executeButton.addActionListener(buttonListeners);
-        pathButton = new JButton("PATH");
         pathButton.addActionListener(buttonListeners);
+        executeButton.addActionListener(buttonListeners);
         GroupLayout groupLayout = initializeLayout();
         JTextArea statusArea = new JTextArea();
         statusArea.setEditable(false);
@@ -102,6 +98,9 @@ public class GUI extends JFrame {
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Table", null, tableScroll, null);
         getContentPane().setLayout(groupLayout);
+        controller = new Controller(currentPath, tabbedPane.getComponents());
+
+
     }
     private GroupLayout initializeLayout(){
         GroupLayout groupLayout = new GroupLayout(getContentPane());

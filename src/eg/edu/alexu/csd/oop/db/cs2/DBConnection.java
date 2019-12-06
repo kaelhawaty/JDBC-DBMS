@@ -24,7 +24,7 @@ public class DBConnection implements java.sql.Connection{
     @Override
     public Statement createStatement() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Connection is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute : Connection is already closed");
             throw new SQLException("This statement is already closed");
         }
         final Statement newStatement = new DBStatement(connector, this);

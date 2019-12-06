@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,37 +20,46 @@ import java.util.List;
 public class Controller {
     private Driver driver;
     private Connection connection;
-    public Controller(String path){
+    private Statement statement;
+    private JTextArea loggerArea;
+    private JTable table;
+    private  JTextArea statusArea;
+    public Controller(String path, Component []components){
         driver = new DBDriver();
         Properties info = new Properties();
-        info.put("path", path);
-        try {
-            connection = driver.connect("jdbc:xmldb://localhost", info);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public void setConnection(String path){
-        Properties info = new Properties();
-        info.put("path", path);
-        try {
-            connection = driver.connect("jdbc:xmldb://localhost", info);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    public void execute(Component []components, String query) throws SQLException {
+        info.put("path", new File(path).getAbsoluteFile());
         JScrollPane[] scrollPanes = new JScrollPane[3];
         JViewport[] viewports = new JViewport[3];
         for (int i = 0; i < 3; ++i) {
             scrollPanes[i] = (JScrollPane) components[i];
             viewports[i] = scrollPanes[i].getViewport();
         }
-        JTextArea statusArea = (JTextArea) viewports[0].getView();
-        JTextArea loggerArea = (JTextArea) viewports[1].getView();
-        JTable table = (JTable) viewports[2].getView();
-        Statement statement = connection.createStatement();
+        statusArea = (JTextArea) viewports[0].getView();
+        loggerArea = (JTextArea) viewports[1].getView();
+        table = (JTable) viewports[2].getView();
+        try {
+            connection = driver.connect("jdbc:xmldb://localhost", info);
+        } catch (SQLException e) {
+            statusArea.append("Couldn't connect to driver\n");
+        }
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            statusArea.append("Couldn't create Statement\n");
+        }
+
+    }
+    public void setConnection(String path){
+        Properties info = new Properties();
+        info.put("path", new File(path).getAbsoluteFile());
+        try {
+            connection = driver.connect("jdbc:xmldb://localhost", info);
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            statusArea.append("Failed to set Connection\n");
+        }
+    }
+    public void execute(String query) {
         String[] split = query.split("\\s+");
         boolean executeSuccess = false;
         int updated = -1;
@@ -57,15 +67,27 @@ public class Controller {
         switch (split[0].toLowerCase()) {
             case "create":
             case "drop":
-                executeSuccess = statement.execute(query);
+                try {
+                    executeSuccess = statement.execute(query);
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                }
                 break;
             case "insert":
             case "update":
             case "delete":
-                updated = statement.executeUpdate(query);
+                try {
+                    updated = statement.executeUpdate(query);
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                }
                 break;
             case "select":
-                resultSet = statement.executeQuery(query);
+                try {
+                    resultSet = statement.executeQuery(query);
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                }
                 break;
             default:
                 JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
@@ -74,31 +96,31 @@ public class Controller {
         if (updated > -1) {
             statusArea.append(updated+ " line(s) have been updated successfully\n");
         }else if(resultSet != null){
-            updateTableArea(table, resultSet);
-            statusArea.append("Table updated successfully");
+            updateTableArea(resultSet);
+            statusArea.append("Table updated successfully\n");
         }else{
             if(!executeSuccess)
-                statusArea.append("Failed to " + split[0] + " "+ split[1] + " " + split[2] + "\n");
+                statusArea.append("Failed to execute the command: " + query + "\n");
             else
                 statusArea.append(split[1] + " " + split[2].split("\\(")[0] + " " + split[0] + "ed successfully\n");
         }
-        updateLoggerArea(loggerArea);
+        updateLoggerArea();
 
     }
 
 
-    public void updateLoggerArea(JTextArea loggerArea){
+    public void updateLoggerArea(){
         FileReader reader;
         try {
             reader = new FileReader("log.txt");
             loggerArea.read(reader, "log.txt");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            DBLogger.getInstance().getLogger().info("Couldn't update Logger file: FileNotFoundException msg: " +e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            DBLogger.getInstance().getLogger().info("Couldn't update Logger file: IOException msg: " +e.getMessage());
         }
     }
-    public void updateTableArea(JTable table, ResultSet resultSet){
+    public void updateTableArea(ResultSet resultSet){
         List<String> columnNames = new ArrayList<>();
         int numOfColumns = 1;
         try {
@@ -107,7 +129,6 @@ public class Controller {
                 columnNames.add(metaData.getColumnName(numOfColumns++));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         DefaultTableModel tableModel = new DefaultTableModel();
         for (int i = 0; i < numOfColumns-1; ++i){
@@ -121,7 +142,6 @@ public class Controller {
                 tableModel.addRow(rowData);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
         table.setModel(tableModel);
 

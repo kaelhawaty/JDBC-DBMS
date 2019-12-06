@@ -1,50 +1,30 @@
-ديس 06, 2019 6:38:09 م eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
+Dec 06, 2019 7:49:36 PM eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
 INFO: DBDriver has been created successfully!
-ديس 06, 2019 6:38:09 م eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+Dec 06, 2019 7:49:36 PM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
 INFO: URL Accepted: jdbc:xmldb://localhost
-ديس 06, 2019 6:38:09 م eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+Dec 06, 2019 7:49:36 PM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
 INFO: Connection has been created successfully!
-ديس 06, 2019 6:38:25 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+Dec 06, 2019 7:49:36 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-ديس 06, 2019 6:38:25 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: create database ddd
-ديس 06, 2019 6:38:32 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+Dec 06, 2019 7:49:39 PM eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+INFO: URL Accepted: jdbc:xmldb://localhost
+Dec 06, 2019 7:49:39 PM eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+INFO: Connection has been created successfully!
+Dec 06, 2019 7:49:39 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
-ديس 06, 2019 6:38:32 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
-INFO: SQL command has been executed successfully: create table test(name varchar, age int, birth date, gpa float)
-ديس 06, 2019 6:38:39 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:38:39 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: insert into test values('Hazem', 20, 29/5/1999, 0.565)
-ديس 06, 2019 6:38:39 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+Dec 06, 2019 7:49:57 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create database ddd 
+Dec 06, 2019 7:50:06 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create table test(name varchar, age int, birth date, gpa float) 
+Dec 06, 2019 7:50:10 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20, 29/5/1999, 0.565) 
+Dec 06, 2019 7:50:10 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
 INFO: Number of rows changed: 1
-ديس 06, 2019 6:38:46 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:38:46 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: insert into test values('Karmola', 3, 1/1/2000, 9.00)
-ديس 06, 2019 6:38:46 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-ديس 06, 2019 6:38:54 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:38:54 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: insert into test values('M7osy', 1000, 1/1/1980, 4.00)
-ديس 06, 2019 6:38:54 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-ديس 06, 2019 6:39:02 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:39:02 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: SQL command has been executed successfully: insert into test values('Beke', 1, 1/1/2010, 3.95)
-ديس 06, 2019 6:39:02 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
-INFO: Number of rows changed: 1
-ديس 06, 2019 6:39:09 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:39:09 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: select * from test
-ديس 06, 2019 6:39:18 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:39:18 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
-INFO: SQL command has been executed successfully: select * from test
-ديس 06, 2019 6:39:33 م eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
-INFO: Statement has been created successfully
-ديس 06, 2019 6:39:33 م eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
+Dec 06, 2019 7:50:24 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
 INFO: SQL command has been executed successfully: select * from test order by name
+Dec 06, 2019 7:51:38 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: UPDATE test SET name='11111' where age = 20
+Dec 06, 2019 7:51:38 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+Dec 06, 2019 7:51:48 PM eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
+INFO: SQL command has been executed successfully: select * from test

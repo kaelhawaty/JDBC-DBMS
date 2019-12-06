@@ -35,7 +35,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public void addBatch(String sql) throws SQLException {
             if(isClosed){
-                DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+                DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
                 throw new SQLException("This statement is already closed");
             }
             commands.add(sql);
@@ -44,7 +44,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public void clearBatch() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         commands.clear();
@@ -156,7 +156,7 @@ public class DBStatement implements java.sql.Statement{
     }
     public boolean executeTime(String sql) throws SQLException, InterruptedException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         if(checkStructureQuery(sql)){
@@ -187,7 +187,7 @@ public class DBStatement implements java.sql.Statement{
             }
             Table schema = new Table(databaseManager.getCurrentTable());
             List<Column> list = schema.getColumns();
-            HashMap<String, Integer> colToIndex = new HashMap<>();
+            HashMap<String, Integer> colToIndex = new LinkedHashMap<>();
             HashMap<Integer, String> indexToType = new HashMap<>();
             for(int i = 1; i < list.size(); i++){
                 colToIndex.put(list.get(i).getName(), i-1);
@@ -214,7 +214,7 @@ public class DBStatement implements java.sql.Statement{
     }
     public int[] executeBatchTime() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         BatchUpdateException e = null;
@@ -270,10 +270,9 @@ public class DBStatement implements java.sql.Statement{
 
     public ResultSet executeQueryTime(String sql) throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
-        if(QueriesParser.checkExecuteQuery(sql)){
             Object[][] table;
             try {
                 table = databaseManager.executeQuery(sql);
@@ -285,7 +284,7 @@ public class DBStatement implements java.sql.Statement{
             Table schema = new Table(databaseManager.getCurrentTable());
             List<Column> list = schema.getColumns();
             Set<String> s = parseQuery(sql, list);
-            Map<String, Integer> colToIndex = new HashMap<>();
+            Map<String, Integer> colToIndex = new LinkedHashMap<>();
             Map<Integer, String> indexToType = new HashMap<>();
             int cnt = 0;
             for(int i = 1; i < list.size(); i++){
@@ -299,9 +298,6 @@ public class DBStatement implements java.sql.Statement{
             DBLogger.getInstance().getLogger().info("SQL command has been executed successfully: "+ sql);
             return resultSet;
         }
-        DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql + " Reason: Wrong Syntax");
-        throw new SQLException("Syntax Error");
-    }
     private Set<String> parseQuery(String query, List<Column> list){
         Set<String> set = new HashSet<>();
         query = query.toLowerCase();
@@ -323,29 +319,26 @@ public class DBStatement implements java.sql.Statement{
 
     public int executeUpdateTime(String sql) throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
-        if(QueriesParser.checkInsertInto(sql) || QueriesParser.checkDeleteFromTable(sql) || QueriesParser.checkUpdate(sql)){
-            try {
-                currentResult = databaseManager.executeUpdateQuery(sql);
-            }catch(SQLException e){
-                DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql);
-                DBLogger.getInstance().getLogger().info("Exception has been thrown: " + e.getMessage());
-                throw e;
-            }
+        try {
+            currentResult = databaseManager.executeUpdateQuery(sql);
+        }catch(SQLException e){
+            DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql);
+            DBLogger.getInstance().getLogger().info("Exception has been thrown: " + e.getMessage());
+            throw e;
+        }
             DBLogger.getInstance().getLogger().info("SQL command has been executed successfully: "+ sql);
             DBLogger.getInstance().getLogger().info("Number of rows changed: " + currentResult);
             return currentResult;
         }
-        DBLogger.getInstance().getLogger().info("Failed to execute SQL command: " + sql + " Reason: Wrong Syntax");
-        throw new SQLException("Syntax Error");
-    }
+
 
     @Override
     public Connection getConnection() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         return connection;
@@ -353,7 +346,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public int getQueryTimeout() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         return timeout;
@@ -362,7 +355,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         timeout = seconds;
@@ -370,7 +363,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public ResultSet getResultSet() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         return resultSet;
@@ -378,7 +371,7 @@ public class DBStatement implements java.sql.Statement{
     @Override
     public int getUpdateCount() throws SQLException {
         if(isClosed){
-            DBLogger.getInstance().getLogger().info("Failed to executed close: Statement is already closed");
+            DBLogger.getInstance().getLogger().info("Failed to execute: Statement is already closed");
             throw new SQLException("This statement is already closed");
         }
         return currentResult;
