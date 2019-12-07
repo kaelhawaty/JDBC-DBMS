@@ -15,7 +15,6 @@ public class DBStatement implements java.sql.Statement{
     private DatabaseManager databaseManager;
     private Connection connection;
     private Queue<String> commands;
-    private Queue<Object> results;
     private boolean isClosed;
     private ResultSet resultSet;
     private int currentResult;

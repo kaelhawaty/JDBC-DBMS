@@ -8,14 +8,16 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.SQLException;
 
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+
 public class GUI extends JFrame {
 
     private JTable table;
-    private JLabel titleLabel, pathLabel;
-    private JTextField textField;
+    private JLabel titleLabel, pathLabel, timeLabel, numberLabel;
+    private JTextArea textField;
     private JTabbedPane tabbedPane;
-    private JButton executeButton, pathButton;
-    private JScrollPane pathScroll, statusScroll, tableScroll, loggerScroll;
+    private JButton executeButton, pathButton, timeButton;
+    private JScrollPane textScroll, statusScroll, tableScroll, loggerScroll;
     private String currentPath = new File("").getAbsolutePath();
     private Controller controller;
     /**
@@ -48,9 +50,10 @@ public class GUI extends JFrame {
 
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-        textField = new JTextField();
+        textField = new JTextArea();
         textField.setColumns(10);
-
+        textScroll = new JScrollPane(textField);
+        textScroll.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
         pathLabel = new JLabel("Current Path");
         pathLabel.setFont(new Font("Tahoma", Font.PLAIN, 15));
 
@@ -68,35 +71,51 @@ public class GUI extends JFrame {
                         pathLabel.setText(currentPath);
                         controller.setConnection(currentPath);
                     }
-                }else{
-                    String query = textField.getText().replaceAll("^\\s+", "");
-                    if(query == null || query.length() == 0)
-                        JOptionPane.showMessageDialog(getContentPane(), "The query is empty, Please enter your SQL statement");
-                    else {
+                }else if (e.getSource().equals(executeButton)){
+                    String []queries = textField.getText().split("\\n");
+                    if(queries.length==1 && queries[0].equals(""))
+                        JOptionPane.showMessageDialog(getContentPane(), "The text area is empty, Please enter your SQL statement");
+                    for (String query : queries){
                         controller.execute(query);
+                    }
+                }else {
+                    String timeInString = JOptionPane.showInputDialog("Enter a valid time in seconds");
+                    if(!timeInString.matches("[0-9]+"))
+                        JOptionPane.showMessageDialog(getContentPane(),"Wrong input");
+                    else {
+                        controller.setQueryTimeOut(Integer.parseInt(timeInString));
+                        numberLabel.setText(timeInString);
                     }
                 }
             }
         };
         pathButton.addActionListener(buttonListeners);
         executeButton.addActionListener(buttonListeners);
+
+        timeButton = new JButton("Change");
+        timeButton.addActionListener(buttonListeners);
+        numberLabel = new JLabel("100");
+        numberLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        timeLabel = new JLabel("Query Time Out");
+
         GroupLayout groupLayout = initializeLayout();
         JTextArea statusArea = new JTextArea();
         statusArea.setEditable(false);
         statusScroll = new JScrollPane(statusArea);
-        statusScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        statusScroll.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Status", null, statusScroll, null);
 
         JTextArea loggerArea = new JTextArea(5, 20);
         loggerArea.setEditable(false);
         loggerScroll = new JScrollPane(loggerArea);
-        loggerScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        loggerScroll.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Logger", null, loggerScroll, null);
         table = new JTable();
         table.setEnabled(false);
         tableScroll = new JScrollPane(table);
-        tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        tableScroll.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
         tabbedPane.addTab("Table", null, tableScroll, null);
+
         getContentPane().setLayout(groupLayout);
         controller = new Controller(currentPath, tabbedPane.getComponents());
 
@@ -118,9 +137,24 @@ public class GUI extends JFrame {
                                                 .addGap(139)
                                                 .addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
                                                         .addComponent(executeButton)
-                                                        .addComponent(textField, GroupLayout.PREFERRED_SIZE, 496, GroupLayout.PREFERRED_SIZE))
-                                                .addGap(111)
-                                                .addComponent(pathButton)))
+                                                        .addComponent(textScroll, GroupLayout.PREFERRED_SIZE, 496, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                                                        .addGroup(groupLayout.createSequentialGroup()
+                                                                .addPreferredGap(ComponentPlacement.RELATED, 188, Short.MAX_VALUE)
+                                                                .addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+                                                                        .addGroup(groupLayout.createSequentialGroup()
+                                                                                .addComponent(numberLabel)
+                                                                                .addGap(97))
+                                                                        .addGroup(groupLayout.createSequentialGroup()
+                                                                                .addComponent(timeButton)
+                                                                                .addGap(72))))
+                                                        .addGroup(groupLayout.createSequentialGroup()
+                                                                .addGap(43)
+                                                                .addComponent(pathButton))
+                                                        .addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+                                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                                .addComponent(timeLabel, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(13)))))
                                 .addContainerGap())
         );
         groupLayout.setVerticalGroup(
@@ -131,17 +165,24 @@ public class GUI extends JFrame {
                                                 .addContainerGap()
                                                 .addComponent(titleLabel)
                                                 .addGap(18)
-                                                .addComponent(textField, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(textScroll, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(groupLayout.createSequentialGroup()
-                                                .addGap(40)
+                                                .addGap(29)
                                                 .addComponent(pathLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                                .addComponent(pathButton)))
+                                                .addComponent(pathButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(timeLabel)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(numberLabel)))
                                 .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(executeButton)
+                                .addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(executeButton)
+                                        .addComponent(timeButton))
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 781, GroupLayout.PREFERRED_SIZE))
         );
+
         return groupLayout;
     }
 }

@@ -53,8 +53,17 @@ public class Controller {
         Properties info = new Properties();
         info.put("path", new File(path).getAbsoluteFile());
         try {
+            statement.close();
+            connection.close();
             connection = driver.connect("jdbc:xmldb://localhost", info);
             statement = connection.createStatement();
+        } catch (SQLException e) {
+            statusArea.append("Failed to set Connection\n");
+        }
+    }
+    public void setQueryTimeOut(int queryTimeOut){
+        try {
+            statement.setQueryTimeout(queryTimeOut);
         } catch (SQLException e) {
             statusArea.append("Failed to set Connection\n");
         }
@@ -70,7 +79,7 @@ public class Controller {
                 try {
                     executeSuccess = statement.execute(query);
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                    JOptionPane.showMessageDialog(statusArea, "Failed to execute the query");
                 }
                 break;
             case "insert":
@@ -79,14 +88,14 @@ public class Controller {
                 try {
                     updated = statement.executeUpdate(query);
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                    JOptionPane.showMessageDialog(statusArea, "Failed to execute the query");
                 }
                 break;
             case "select":
                 try {
                     resultSet = statement.executeQuery(query);
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(statusArea, "Enter a valid sql statement");
+                    JOptionPane.showMessageDialog(statusArea, "Failed to execute the query");
                 }
                 break;
             default:
