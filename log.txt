@@ -1,8 +1,8 @@
-ديسمبر ٠٧, ٢٠١٩ ٣:٢٣:٤٠ ص eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
+������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
 INFO: DBDriver has been created successfully!
-ديسمبر ٠٧, ٢٠١٩ ٣:٢٣:٤٠ ص eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
 INFO: URL Accepted: jdbc:xmldb://localhost
-ديسمبر ٠٧, ٢٠١٩ ٣:٢٣:٤٠ ص eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
 INFO: Connection has been created successfully!
-ديسمبر ٠٧, ٢٠١٩ ٣:٢٣:٤٠ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
