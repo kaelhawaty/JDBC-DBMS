@@ -1,8 +1,70 @@
-������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٥:٥٨ ص eg.edu.alexu.csd.oop.db.cs2.DBDriver <init>
 INFO: DBDriver has been created successfully!
-������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٥:٥٨ ص eg.edu.alexu.csd.oop.db.cs2.DBDriver acceptsURL
 INFO: URL Accepted: jdbc:xmldb://localhost
-������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٥:٥٨ ص eg.edu.alexu.csd.oop.db.cs2.DBConnection <init>
 INFO: Connection has been created successfully!
-������ ??, ???? ?:??:?? � eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٥:٥٨ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement <init>
 INFO: Statement has been created successfully
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create database testD
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeTime
+INFO: SQL command has been executed successfully: create table test (name varchar, age int, gpa float)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Hazem', 20, 30.00015)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Kareem', 20, 0.002)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Fares', 515, 3.0)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Origi', 4444, 4444.4444)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Abobakr', 2, 1.0)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('MoSalah', 2, 0.0009)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Alice', 2, 30.00015)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('BOB', 2, 30.00015)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('Z', 55, 30.00015)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('zoma', 15415, 56.22)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('karmola', 155, 36.51)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('beke', 3, 50.0001)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: SQL command has been executed successfully: insert into test values('m7osy', 2, 50.002)
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeUpdateTime
+INFO: Number of rows changed: 1
+ديسمبر ٠٧, ٢٠١٩ ٤:٢٦:١٥ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
+INFO: SQL command has been executed successfully: select * from test
+ديسمبر ٠٧, ٢٠١٩ ٤:٣٧:٢١ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
+INFO: SQL command has been executed successfully: select * from test order by name
+ديسمبر ٠٧, ٢٠١٩ ٤:٣٨:٤٦ ص eg.edu.alexu.csd.oop.db.cs2.DBStatement executeQueryTime
+INFO: SQL command has been executed successfully: select * from test order by age asc, gpa desc
